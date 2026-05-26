@@ -22,7 +22,7 @@ st.markdown("""
 }
 
 .header-box {
-    background: linear-gradient(to right, #FF9a9e, #Fecfef);
+    background: linear-gradient(to right, #fbc2eb, #a6c1ee);
     padding: 35px;
     border-radius: 25px;
     color: white;
