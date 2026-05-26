@@ -216,6 +216,43 @@ class Library:
 
         return False
 
+    # ======== UPDATE BUKU =========
+
+    # =====================================================
+# UPDATE / EDIT BUKU
+# =====================================================
+
+def update_buku(
+    self,
+    kode,
+    judul_baru,
+    penulis_baru,
+    kategori_baru,
+    tahun_baru,
+    rating_baru,
+    status_baru
+):
+
+    current = self.head
+
+    while current:
+
+        # cek kode buku
+        if current.kode == kode:
+
+            # update data buku
+            current.judul = judul_baru
+            current.penulis = penulis_baru
+            current.kategori = kategori_baru
+            current.tahun = tahun_baru
+            current.rating = rating_baru
+            current.status = status_baru
+
+            return True
+
+        current = current.next
+
+    return False
 
 # =========================================================
 # SESSION STATE
@@ -296,6 +333,7 @@ menu = st.sidebar.selectbox(
         "🏠 Home",
         "📚 Koleksi Buku",
         "➕ Tambah Buku",
+        "✏️ Update Buku",
         "🔍 Cari Buku",
         "🗑️ Hapus Buku",
         "📊 Status Akhir"
@@ -516,6 +554,88 @@ elif menu == "➕ Tambah Buku":
 
         st.balloons()
 
+# =========================
+#     UPDATE BUKU
+# =========================
+
+# =========================================================
+# UPDATE BUKU
+# =========================================================
+
+elif menu == "✏️ Update Buku":
+
+    st.title("✏️ Update Data Buku")
+
+    kode = st.text_input(
+        "🆔 Masukkan kode buku"
+    )
+
+    judul = st.text_input(
+        "📖 Judul baru"
+    )
+
+    penulis = st.text_input(
+        "✍️ Penulis baru"
+    )
+
+    kategori = st.selectbox(
+        "📚 Kategori baru",
+        [
+            "Romance",
+            "Fiksi",
+            "Nonfiksi",
+            "Referensi",
+            "Self Improvement"
+        ]
+    )
+
+    tahun = st.number_input(
+        "📅 Tahun baru",
+        2000,
+        2025
+    )
+
+    rating = st.slider(
+        "⭐ Rating baru",
+        1.0,
+        5.0,
+        4.0
+    )
+
+    status = st.selectbox(
+        "📌 Status baru",
+        [
+            "Tersedia",
+            "Dipinjam"
+        ]
+    )
+
+    if st.button("✨ Update Buku"):
+
+        hasil = library.update_buku(
+            kode,
+            judul,
+            penulis,
+            kategori,
+            tahun,
+            rating,
+            status
+        )
+
+        if hasil:
+
+            st.success(
+                f"✅ Buku dengan kode {kode} berhasil diupdate!"
+            )
+
+            st.balloons()
+
+        else:
+
+            st.error(
+                "❌ Kode buku tidak ditemukan"
+            )
+
 # =========================================================
 # CARI BUKU
 # =========================================================
@@ -643,4 +763,4 @@ st.markdown("""
 Where code meets books and creativity
 
 </div>
-""", unsafe_allow_html=True)                                                                                                        KLO KYKGINI KITA JADI ADMIN NYA ATAU JADI PENGGUNA BIASA SIH? AKU BLM PAHAM
+""", unsafe_allow_html=True)                                                                                                       
