@@ -305,13 +305,13 @@ menu = st.sidebar.selectbox(
 st.sidebar.markdown("---")
 
 st.sidebar.markdown("""
-### 🌸 Kategori Populer
+### 📓 Kategori Populer
 
-📖 Romance  
-🧠 Nonfiksi  
-📚 Referensi  
-🌧️ Emotional Story  
-✨ Self Improvement  
+- Romance  
+- Nonfiksi  
+- Referensi  
+- Emotional Story  
+- Self Improvement  
 
 """)
 
@@ -366,14 +366,14 @@ if menu == "🏠 Home":
     📚 tambahkan koleksi buku favoritmu  
     🔍 cari buku dengan cepat dan mudah  
     ✨ kelola perpustakaan digital dengan lebih rapi  
-    📖 jelajahi buku modern dari berbagai kategori  
-    ☕ nikmati pengalaman perpustakaan digital yang modern  
+    📖 jelajahi buku modern dari berbagai kategori
+    ☕  nikmati pengalaman perpustakaan digital yang modern  
 
     """)
 
     st.markdown("---")
 
-    st.subheader("🔥 Trending Minggu Ini")
+    st.subheader("🔥 Trending Saat Ini")
 
     st.markdown("""
     <div class="book-card">
