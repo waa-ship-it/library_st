@@ -329,7 +329,7 @@ if menu == "🏠 Home":
     </div>
 
     <div class="header-subtitle">
-    Ruang digital penuh cerita, pengetahuan, dan imajinasi ✨
+    Selamat datang di ruang kecil penuh cerita dan ilmu 🧸
     </div>
 
     </div>
@@ -361,13 +361,13 @@ if menu == "🏠 Home":
     st.markdown("---")
 
     st.markdown("""
-    ### 🌸 Yang Bisa Kamu Lakukan
+    ### yang bisa kalian lakukan :
 
-    📚 Tambahkan koleksi buku favoritmu  
-    🔍 Cari buku dengan cepat dan mudah  
-    ✨ Kelola perpustakaan digital dengan lebih rapi  
-    📖 Jelajahi buku modern dari berbagai kategori  
-    ☕ Nikmati pengalaman membaca yang cozy dan aesthetic  
+    📚 tambahkan koleksi buku favoritmu  
+    🔍 cari buku dengan cepat dan mudah  
+    ✨ kelola perpustakaan digital dengan lebih rapi  
+    📖 jelajahi buku modern dari berbagai kategori  
+    ☕ nikmati pengalaman perpustakaan digital yang modern  
 
     """)
 
@@ -392,7 +392,7 @@ if menu == "🏠 Home":
 
     <h3>📖 Eccedentesiast</h3>
 
-    <p>✍️ itaKRN</p>
+    <p>✍️ Itakrn</p>
 
     <p>⭐ 4.9 | 🥀 Drama Persahabatan</p>
 
@@ -511,7 +511,7 @@ elif menu == "➕ Tambah Buku":
         )
 
         st.success(
-            f"📚 Buku '{judul}' berhasil ditambahkan!"
+            f"✅ Buku '{judul}' berhasil ditambahkan!"
         )
 
         st.balloons()
@@ -535,7 +535,7 @@ elif menu == "🔍 Cari Buku":
         if hasil:
 
             st.success(
-                f"✨ Ditemukan {len(hasil)} buku"
+                f"✅ Ditemukan {len(hasil)} buku"
             )
 
             for buku in hasil:
@@ -576,7 +576,7 @@ elif menu == "🗑️ Hapus Buku":
         if hasil:
 
             st.success(
-                "✨ Buku berhasil dihapus"
+                "✅ Buku berhasil dihapus"
             )
 
         else:
@@ -589,9 +589,9 @@ elif menu == "🗑️ Hapus Buku":
 # STATISTIK
 # =========================================================
 
-elif menu == "📊 Statistik":
+elif menu == "📊 Status Akhir":
 
-    st.title("📊 Statistik Perpustakaan")
+    st.title("📊 Status Perpustakaan")
 
     total = len(library.tampilkan_buku())
 
@@ -627,13 +627,10 @@ elif menu == "📊 Statistik":
     st.markdown("---")
 
     st.info(f"""
-    📚 Total koleksi buku : {total}
-
-    🟢 Buku tersedia : {tersedia}
-
-    📕 Buku dipinjam : {dipinjam}
-
-    🌸 Buku romance : {romance}
+        - Total koleksi buku : {total}
+        - Buku tersedia : {tersedia}
+        - Buku dipinjam : {dipinjam}
+        - Buku romance : {romance}
     """)
 
 # =========================================================
@@ -643,7 +640,7 @@ elif menu == "📊 Statistik":
 st.markdown("""
 <div class="footer">
 
-✨ Dibuat dengan Python, Streamlit, dan sedikit cinta terhadap buku 📚
+✨ Where code meets books and creativity ✨
 
 </div>
 """, unsafe_allow_html=True)
