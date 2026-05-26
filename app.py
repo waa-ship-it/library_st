@@ -22,7 +22,7 @@ st.markdown("""
 }
 
 .header-box {
-    background: linear-gradient(to right, #6C63FF, #8E7CFF);
+    background: linear-gradient(to right, #FF9a9e, #Fecfef);
     padding: 35px;
     border-radius: 25px;
     color: white;
@@ -394,15 +394,14 @@ if menu == "🏠 Home":
 
     st.markdown("---")
 
+    st.markdown("### yang bisa kalian lakukan :")
+    
     st.markdown("""
-    ### yang bisa kalian lakukan :
-
     📚 tambahkan koleksi buku favoritmu  
     🔍 cari buku dengan cepat dan mudah  
     ✨ kelola perpustakaan digital dengan lebih rapi  
     📖 jelajahi buku modern dari berbagai kategori
     ☕ nikmati pengalaman perpustakaan digital yang modern
-
     """)
 
     st.markdown("---")
