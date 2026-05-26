@@ -367,7 +367,7 @@ if menu == "🏠 Home":
     🔍 cari buku dengan cepat dan mudah  
     ✨ kelola perpustakaan digital dengan lebih rapi  
     📖 jelajahi buku modern dari berbagai kategori
-    ☕  nikmati pengalaman perpustakaan digital yang modern  
+    ☕ nikmati pengalaman perpustakaan digital yang modern  
 
     """)
 
