@@ -1,123 +1,499 @@
 import streamlit as st
 
-# ====================================
-#         KELAS MODE KATEGORI
-# ====================================
+# =========================================
+#           KONFIGURASI HALAMAN
+# =========================================
 
-class kategoriNode:
-    def __init__(self, nama_kategori):
-        self.nama = nama_kategori
-        self.sub_kategori = []
+st.set_page_config(
+    page_title="Digital Library",
+    page_icon="📚",
+    layout="wide"
+)
 
-    def tambah_sub(self, node_kategori):
-        self.sub_kategori.append(node_kategori)
-    
-#mengubah fungsi print menjadi return string agar bisa ditampilkan di web
-    def dapatkan_tree_string(self, level=0):
-        indentasi = "   " * level
-        simbol = "└>  " if level > 0 else "+🛒 "
-        hasil = f"{indentasi} {simbol} {self.nama}\n"
+# =======================
+#       CSS CUSTOM
+# =======================
 
-        print(f"{indentasi}{simbol}{self.nama}")
+st.markdown("""
+<style>
 
-        for sub in self.sub_kategori:
-            hasil += sub.dapatkan_tree_string(level + 1)
-        return hasil
+.main {
+    background-color: #F5F7FA;
+}
 
-    def cari_node(self, target_nama):
-        if self.nama.lower() == target_nama.lower():
-            return self
-        
-        for sub in self.sub_kategori:
-            hasil = sub.cari_node(target_nama)
-            if hasil: 
-                return hasil
+.title {
+    font-size: 50px;
+    font-weight: bold;
+    color: #4A148C;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 20px;
+    color: gray;
+    text-align: center;
+}
+
+.card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.footer {
+    text-align: center;
+    color: gray;
+    padding: 10px;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ====================
+#  CLASS NODE / BUKU
+# ====================
+
+class Buku:
+    def __init__(self, id_buku, judul, penulis, tahun):
+
+        self.id_buku = id_buku
+        self.judul = judul
+        self.penulis = penulis
+        self.tahun = tahun
+
+        # Pointer ke node berikutnya
+        self.next = None
+
+
+# ========================
+#    CLASS LINKED LIST
+# ========================
+
+class Perpustakaan:
+    def __init__(self):
+        self.head = None
+
+    # ========= TAMBAH BUKU ==========
+    def tambah_buku(self, id_buku, judul, penulis, tahun):
+
+        buku_baru = Buku(id_buku, judul, penulis, tahun)
+
+        buku_baru = Buku(
+            id_buku,
+            judul,
+            penulis,
+            tahun
+        )
+
+        # Jika linked list kosong
+        if self.head is None:
+            self.head = buku_baru
+
+        else:
+            current = self.head
+
+            # Cari node terakhir
+            while current.next:
+                current = current.next
+
+            # Sambungkan node terakhir
+            current.next = buku_baru
+
+    # ========= TAMPILKAN BUKU =========
+    # TAMPILKAN BUKU
+    def tampilkan_buku(self):
+
+        data = []
+
+        current = self.head
+
+        while current:
+
+            data.append({
+                "📖 ID Buku": current.id_buku,
+                "📚 Judul": current.judul,
+                "✍️ Penulis": current.penulis,
+                "📅 Tahun": current.tahun
+            })
+
+            current = current.next
+
+        return data
+
+    # ======== CARI BUKU =========
+    def cari_buku(self, judul):
+
+        current = self.head
+
+        while current:
+
+            if current.judul.lower() == judul.lower():
+                return current
+
+            current = current.next
+
         return None
-    
-    def cari_jalur(self, target, path=""):
-        jalur_saat_ini = path + " > " + self.nama if path else self.nama
 
-        if self.nama.lower() == target.lower():
-            return jalur_saat_ini
-        
-        for sub in self.sub_kategori:
-            hasil = sub.cari_jalur(target, jalur_saat_ini)
-            if hasil: 
-                return hasil
-        return None
+    # ======= HAPUS BUKU =========
+    def hapus_buku(self, judul):
 
-# ====================================
-#     PROGRAM UTAMA (STREAMLIT UI)
-# ==================================== 
+        current = self.head
+        prev = None
 
-st.set_page_config(page_title="struktur kategori", page_icon="+")
+        while current:
 
-st.title(" pembuatan struktur kategori ")
-st.write(" aplikasi interaktif untuk mensimulasikan struktur data tree ")
+            if current.judul.lower() == judul.lower():
 
-# inisialisasi session state untuk menyimpan struktur tree agar tidak hilang saat halaman di refresh
-if 'root' not in st.session_state:
-    st.session_state.root = None
+                if prev is None:
+                    self.head = current.next
 
-# jika root belum dibuat, tampilkan form pmbuatan root
-if st.session_state.root is None:
-    st.info("sistem belum memiliki kategori utama, silahkan buat terlebih dahulu")
-    nama_root = st.text_input("masukkan nama kategori utama (root) : ", value="toko saya")
-
-    if st.button("buat kategori utama", type="primary"):
-        st.session_state.root = kategoriNode(nama_root)
-        st.rerun() # refresh halaman
-
-# jika root sudah ada, tampilkan menu utama menggunakan tabs
-
-else:
-    root = st.session_state.root
-
-    # mengganti menu CLI dengan sistem tab yang lebih mudah 
-    tab1, tab2, tab3 = st.tabs(["lihat struktur", "+ tambah sub-kategori", "cari jalur"])
-
-    # TAB 1 : LIHAT STRUKTUR 
-    with tab1:
-        st.subheader("struktur kategori saat inii")
-        tree_teks = root.dapatkan_tree_string()
-        # menggunakan st.code agar format indentasi (spasi) tetap rapi
-        st.code(tree_teks, language="text")
-
-    # TAB 2 : TAMABAH SUB-KATEGORI
-    with tab2:
-        st.subheader("tambah cabang baru")
-        induk_nama = st.text_input("nama kategori induk tempat cabang ditambahkan : ")
-        anak_nama = st.text_input("nama sub-kategori baru : ")
-
-        if st.button("tambahkan kategori"):
-            if induk_nama and anak_nama:
-                induk_node = root.cari_node(induk_nama)
-                if induk_node:
-                    induk_node.tambah_sub(kategoriNode(anak_nama))
-                    st.success(f"berhasil menambahkan '{anak_nama}' dibawah '{induk_node.nama}' !")
                 else:
-                    st.error(f"kategori '{induk_nama}' tidak ditemukan !! pastikan ejaannya benar")
-            else:
-                st.warning("harap isi kedua kolom di atas")
+                    prev.next = current.next
 
-    # TAB 3 : CARI JALUR
-    with tab3:
-        st.subheader("pencarian breadcrumb")
-        target_cari = st.text_input("nama kategori yang ingin dicari jalurnya : ")
+                return True
 
-        if st.button("cari jalur"):
-            if target_cari:
-                hasil = root.cari_jalur(target_cari)
-                if hasil:
-                    st.success("ditemukan !!")
-                    st.info(f"jalur : {hasil}")
-                else:
-                    st.error(f"kategori '{target_cari}' tidak ditemukan dalam sistem")
-            else:
-                st.warning("harap isi nama kategori yang dicari")
+            prev = current
+            current = current.next
 
-    # tombol reset
-    st.divider()
-    if st.button("reset sistem / mulai dari awal"):
-        st.session_state.root = None
-        st.rerun()
+        return False
+
+    # ======== TOTAL BUKU =========
+    def total_buku(self):
+
+        total = 0
+        current = self.head
+
+        while current:
+            total += 1
+            current = current.next
+
+        return total
+
+
+# ==============================
+#         SESSION STATE
+# ==============================
+
+if "perpus" not in st.session_state:
+    st.session_state.perpus = Perpustakaan()
+
+perpus = st.session_state.perpus
+
+# ======================
+#    DATA AWAL BUKU
+# ======================
+
+# ======================================================
+# DATA AWAL BUKU
+# ======================================================
+
+if perpus.head is None:
+
+    # ====================================
+    #           📚 BUKU FIKSI
+    # ====================================
+
+    perpus.tambah_buku(
+        "BK001",
+        "mariposa",
+        "Luluk HF",
+        "2018"
+    )
+
+    perpus.tambah_buku(
+        "BK002",
+        "janji",
+        "Tere liye",
+        "2019"
+    )
+
+    perpus.tambah_buku(
+        "BK003",
+        "Itakrn",
+        "Eccedentesiast",
+        "2023"
+    )
+
+    perpus.tambah_buku(
+        "BK004",
+        "Funiculi Funicula",
+        "Toshikazu Kawaguchi",
+        "2015"
+    )
+
+    # =============================================
+    #           🌸 BUKU NONFIKSI
+    # =============================================
+
+    perpus.tambah_buku(
+        "BK005",
+        "Atomic Habits",
+        "James Clear",
+        "2018"
+    )
+
+    perpus.tambah_buku(
+        "BK006",
+        "The Psychology of Money",
+        "Morgan Housel",
+        "2020"
+    )
+
+    perpus.tambah_buku(
+        "BK007",
+        "Filosofi Teras",
+        "Henry Manampiring",
+        "2018"
+    )
+
+    perpus.tambah_buku(
+        "BK008",
+        "Deep Work",
+        "Cal Newport",
+        "2016"
+    )
+
+    # ======================================
+    #           📖 BUKU REFERENSI
+    # ======================================
+
+    perpus.tambah_buku(
+        "BK009",
+        "Atlas Dunia Pelajar",
+        "Oxford Education",
+        "2023"
+    )
+
+    perpus.tambah_buku(
+        "BK010",
+        "Artificial Intelligence Basics",
+        "Tom Taulli",
+        "2024"
+    )
+
+    perpus.tambah_buku(
+        "BK011",
+        "Ensiklopedia Teknologi Digital",
+        "Gramedia Pustaka",
+        "2024"
+    )
+
+    perpus.tambah_buku(
+        "BK012",
+        "Data Science for Beginners",
+        "Andrew Park",
+        "2023"
+    )
+
+# ===================
+#       HEADER
+# ===================
+
+st.markdown("""
+<div class="card">
+
+<h1 class="title">
+📚 Digital Library
+</h1>
+
+<p class="subtitle">
+✨ Kelola koleksi bukumu dengan cara yang lebih modern ✨
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+# ==============
+#    SIDEBAR
+# ==============
+
+st.sidebar.markdown("""
+# 🌸 Library Menu
+Temukan semua fitur favoritmu di sini 👇
+""")
+
+menu = st.sidebar.selectbox(
+    "📂 Pilih Menu",
+    [
+        "🏠 Home",
+        "➕ Tambah Buku",
+        "📖 Daftar Buku",
+        "🔍 Cari Buku",
+        "🗑️ Hapus Buku"
+    ]
+)
+
+# ==============
+#     HOME
+# ==============
+
+if menu == "🏠 Home":
+
+    st.markdown("""
+    <div class="card">
+    <h2>🏠 Dashboard</h2>
+    <p>Selamat datang di ruang kecil penuh cerita dan ilmu 📚</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Statistik
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.success(f"📚 Total Buku\n\n{perpus.total_buku()}")
+
+    with col2:
+        st.info("☕ Built for book lovers")
+
+    with col3:
+        st.warning("🌸 Clean and structured library system")
+
+    st.markdown("""
+    ---
+    ### ✧⁠*⁠。 Yang Bisa Kamu Lakukan ✧⁠*⁠。
+
+    📚 Tambahkan buku favoritmu ke koleksi digital  
+    🔍 Cari cerita dan pengetahuan dengan mudah  
+    ✨ Susun rak buku agar tetap rapi dan nyaman dilihat  
+    📖 Jelajahi berbagai buku fiksi, nonfiksi, dan referensi  
+    ☕ Nikmati pengalaman perpustakaan digital yang modern   
+
+    ---
+    """)
+
+# =====================
+#     TAMBAH BUKU
+# =====================
+
+elif menu == "➕ Tambah Buku":
+
+    st.markdown("""
+    <div class="card">
+    <h2>➕ Tambah Buku Baru</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    id_buku = st.text_input("📖 Masukkan ID Buku")
+    judul = st.text_input("📚 Masukkan Judul Buku")
+    penulis = st.text_input("✍️ Masukkan Nama Penulis")
+    tahun = st.text_input("📅 Masukkan Tahun Terbit")
+
+    if st.button("✨ Tambah Buku"):
+
+        if id_buku and judul and penulis and tahun:
+
+            perpus.tambah_buku(
+                id_buku,
+                judul,
+                penulis,
+                tahun
+            )
+
+            st.balloons()
+
+            st.success("🎉 Buku berhasil masuk ke koleksi perpustakaan!")
+
+        else:
+            st.error("⚠️ Semua data harus diisi!")
+
+# ================================
+#         TAMPILKAN BUKU
+# ================================
+
+elif menu == "📖 Tampilkan Buku":
+
+    st.markdown("""
+    <div class="card">
+    <h2>📚 Daftar Buku Perpustakaan</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    data = perpus.tampilkan_buku()
+
+    if data:
+
+        st.dataframe(
+            data,
+            use_container_width=True
+        )
+
+        st.success(f"✅ Total buku: {len(data)}")
+
+    else:
+        st.warning("📭 Belum ada buku di perpustakaan")
+
+# ====================
+#      CARI BUKU
+# ====================
+
+elif menu == "🔍 Cari Buku":
+
+    st.markdown("""
+    <div class="card">
+    <h2>🔍 Cari Buku</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    cari = st.text_input("📚 Masukkan Judul Buku")
+
+    if st.button("🔎 Cari Sekarang"):
+
+        hasil = perpus.cari_buku(cari)
+
+        if hasil:
+
+            st.success("🎉 Buku ditemukan!")
+
+            st.markdown(f"""
+            <div class="card">
+
+            <h3>📖 Detail Buku</h3>
+
+            <p><b>ID Buku:</b> {hasil.id_buku}</p>
+            <p><b>Judul:</b> {hasil.judul}</p>
+            <p><b>Penulis:</b> {hasil.penulis}</p>
+            <p><b>Tahun:</b> {hasil.tahun}</p>
+
+            </div>
+            """, unsafe_allow_html=True)
+
+        else:
+            st.error("❌ Buku tidak ditemukan.")
+
+# =========================
+#        HAPUS BUKU
+# =========================
+
+elif menu == "🗑️ Hapus Buku":
+
+    st.markdown("""
+    <div class="card">
+    <h2>🗑️ Hapus Buku</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    hapus = st.text_input("📚 Masukkan Judul Buku")
+
+    if st.button("❌ Hapus Buku"):
+        berhasil = perpus.hapus_buku(hapus)
+
+        if berhasil:
+            st.success("🗑️ Buku berhasil dihapus!")
+
+        else:
+            st.error("❌ Buku tidak ditemukan.")
+
+# ==================
+#      FOOTER
+# ==================
+
+st.markdown("""
+---
+<div class="footer">
+
+✨ Where code meets books and creativity ✨
+
+</div>
+""", unsafe_allow_html=True)
