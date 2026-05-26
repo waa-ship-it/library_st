@@ -216,40 +216,6 @@ class Library:
 
         return False
 
-    # =====================================================
-    # UPDATE BUKU
-    # =====================================================
-    
-    def update_buku(
-        self,
-        kode,
-        judul_baru,
-        penulis_baru,
-        kategori_baru,
-        tahun_baru,
-        rating_baru,
-        status_baru
-    ):
-    
-        current = self.head
-    
-        while current:
-    
-            if current.kode == kode:
-    
-                current.judul = judul_baru
-                current.penulis = penulis_baru
-                current.kategori = kategori_baru
-                current.tahun = tahun_baru
-                current.rating = rating_baru
-                current.status = status_baru
-    
-                return True
-    
-            current = current.next
-    
-        return False
-
 
 # =========================================================
 # SESSION STATE
@@ -330,10 +296,9 @@ menu = st.sidebar.selectbox(
         "🏠 Home",
         "📚 Koleksi Buku",
         "➕ Tambah Buku",
-        "✏️ Update Buku",
         "🔍 Cari Buku",
         "🗑️ Hapus Buku",
-        "📊 Status akhir"
+        "📊 Status Akhir"
     ]
 )
 
@@ -343,7 +308,7 @@ st.sidebar.markdown("""
 ### 📓 Kategori Populer
 
 - Romance
-- fiksi
+- Fiksi
 - Nonfiksi  
 - Referensi 
 - Self Improvement  
@@ -417,7 +382,7 @@ if menu == "🏠 Home":
 
     <p>✍️ James Clear</p>
 
-    <p>⭐ 4.9 | 🧠 self improvement</p>
+    <p>⭐ 4.9 | 🧠 Self Improvement</p>
 
     </div>
     """, unsafe_allow_html=True)
@@ -429,7 +394,7 @@ if menu == "🏠 Home":
 
     <p>✍️ Itakrn</p>
 
-    <p>⭐ 4.9 | 🖇️ fiksi</p>
+    <p>⭐ 4.9 | 🖇️ Fiksi</p>
 
     </div>
     """, unsafe_allow_html=True)
@@ -449,7 +414,7 @@ elif menu == "📚 Koleksi Buku":
         [
             "Semua",
             "Romance",
-            "fiksi",
+            "Fiksi",
             "Nonfiksi",
             "Referensi",
             "Self Improvement"
@@ -504,11 +469,11 @@ elif menu == "➕ Tambah Buku":
     kategori = st.selectbox(
         "📚 Kategori",
         [
-            "romance",
-            "fiksi",
-            "nonfiksi",
-            "referensi",
-            "self Improvement"
+            "Romance",
+            "Fiksi",
+            "Nonfiksi",
+            "Referensi",
+            "Self Improvement"
         ]
     )
 
@@ -550,82 +515,6 @@ elif menu == "➕ Tambah Buku":
         )
 
         st.balloons()
-
-# =========================
-#       UPDATE BUKU
-# =========================
-
-elif menu == "✏️ Update Buku":
-
-    st.title("✏️ Update Data Buku")
-
-    kode = st.text_input(
-        "🆔 Masukkan kode buku"
-    )
-
-    judul = st.text_input("📖 Judul baru")                                                                                                                 INI TARUH DIMAN)
-
-    penulis = st.text_input(
-        "✍️ Penulis baru"
-    )
-
-    kategori = st.selectbox(
-        "📚 Kategori baru",
-        [
-            "Romance",
-            "Fiksi",
-            "Nonfiksi",
-            "Referensi",
-            "Self Improvement"
-        ]
-    )
-
-    tahun = st.number_input(
-        "📅 Tahun baru",
-        2000,
-        2025
-    )
-
-    rating = st.slider(
-        "⭐ Rating baru",
-        1.0,
-        5.0,
-        4.0
-    )
-
-    status = st.selectbox(
-        "📌 Status baru",
-        [
-            "Tersedia",
-            "Dipinjam"
-        ]
-    )
-
-    if st.button("✨ Update Buku"):
-
-        hasil = library.update_buku(
-            kode,
-            judul,
-            penulis,
-            kategori,
-            tahun,
-            rating,
-            status
-        )
-
-        if hasil:
-
-            st.success(
-                f"✅ Buku dengan kode {kode} berhasil diupdate!"
-            )
-
-            st.balloons()
-
-        else:
-
-            st.error(
-                "❌ Kode buku tidak ditemukan"
-            )
 
 # =========================================================
 # CARI BUKU
@@ -697,7 +586,7 @@ elif menu == "🗑️ Hapus Buku":
             )
 
 # =========================================================
-# STATUS AKHIR PERPUSTAKAAN
+#             STATUS AKHIR PERPUSTAKAAN
 # =========================================================
 
 elif menu == "📊 Status Akhir":
@@ -754,4 +643,4 @@ st.markdown("""
 Where code meets books and creativity
 
 </div>
-""", unsafe_allow_html=True)
+""", unsafe_allow_html=True)                                                                                                        KLO KYKGINI KITA JADI ADMIN NYA ATAU JADI PENGGUNA BIASA SIH? AKU BLM PAHAM
