@@ -244,8 +244,8 @@ if "library" not in st.session_state:
     library.tambah_buku(
         "BK002",
         "Eccedentesiast",
-        "itaKRN",
-        "Drama Persahabatan",
+        "itakrn",
+        "Fiksi",
         "2022",
         "4.9",
         "Dipinjam"
@@ -257,7 +257,7 @@ if "library" not in st.session_state:
         "National Geographic",
         "Referensi",
         "2022",
-        "4.8",
+        "4.7",
         "Tersedia"
     )
 
@@ -277,7 +277,7 @@ if "library" not in st.session_state:
         "Morgan Housel",
         "Self Improvement",
         "2020",
-        "4.9",
+        "4.7",
         "Dipinjam"
     )
 
@@ -298,7 +298,7 @@ menu = st.sidebar.selectbox(
         "➕ Tambah Buku",
         "🔍 Cari Buku",
         "🗑️ Hapus Buku",
-        "📊 Statistik"
+        "📊 Status akhir"
     ]
 )
 
@@ -307,10 +307,10 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("""
 ### 📓 Kategori Populer
 
-- Romance  
+- Romance
+- fiksi
 - Nonfiksi  
-- Referensi  
-- Emotional Story  
+- Referensi 
 - Self Improvement  
 
 """)
@@ -367,7 +367,7 @@ if menu == "🏠 Home":
     🔍 cari buku dengan cepat dan mudah  
     ✨ kelola perpustakaan digital dengan lebih rapi  
     📖 jelajahi buku modern dari berbagai kategori
-    ☕ nikmati pengalaman perpustakaan digital yang modern  
+    ☕ nikmati pengalaman perpustakaan digital yang modern
 
     """)
 
@@ -382,7 +382,7 @@ if menu == "🏠 Home":
 
     <p>✍️ James Clear</p>
 
-    <p>⭐ 4.9 | 🧠 Self Improvement</p>
+    <p>⭐ 4.9 | 🧠 self improvement</p>
 
     </div>
     """, unsafe_allow_html=True)
@@ -394,7 +394,7 @@ if menu == "🏠 Home":
 
     <p>✍️ Itakrn</p>
 
-    <p>⭐ 4.9 | 🥀 Drama Persahabatan</p>
+    <p>⭐ 4.9 | 🖇️ fiksi</p>
 
     </div>
     """, unsafe_allow_html=True)
@@ -414,9 +414,9 @@ elif menu == "📚 Koleksi Buku":
         [
             "Semua",
             "Romance",
+            "fiksi",
             "Nonfiksi",
             "Referensi",
-            "Drama Persahabatan",
             "Self Improvement"
         ]
     )
@@ -473,8 +473,6 @@ elif menu == "➕ Tambah Buku":
             "fiksi",
             "nonfiksi",
             "referensi",
-            "drama persahabatan",
-            "teknologi"
             "self Improvement"
         ]
     )
