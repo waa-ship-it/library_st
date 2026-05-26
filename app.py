@@ -218,41 +218,37 @@ class Library:
 
     # ======== UPDATE BUKU =========
 
-    # =====================================================
-# UPDATE / EDIT BUKU
-# =====================================================
-
-def update_buku(
-    self,
-    kode,
-    judul_baru,
-    penulis_baru,
-    kategori_baru,
-    tahun_baru,
-    rating_baru,
-    status_baru
-):
-
-    current = self.head
-
-    while current:
-
-        # cek kode buku
-        if current.kode == kode:
-
-            # update data buku
-            current.judul = judul_baru
-            current.penulis = penulis_baru
-            current.kategori = kategori_baru
-            current.tahun = tahun_baru
-            current.rating = rating_baru
-            current.status = status_baru
-
-            return True
-
-        current = current.next
-
-    return False
+    def update_buku(
+        self,
+        kode,
+        judul_baru,
+        penulis_baru,
+        kategori_baru,
+        tahun_baru,
+        rating_baru,
+        status_baru
+    ):
+    
+        current = self.head
+    
+        while current:
+    
+            # cek kode buku
+            if current.kode == kode:
+    
+                # update data buku
+                current.judul = judul_baru
+                current.penulis = penulis_baru
+                current.kategori = kategori_baru
+                current.tahun = tahun_baru
+                current.rating = rating_baru
+                current.status = status_baru
+    
+                return True
+    
+            current = current.next
+    
+        return False
 
 # =========================================================
 # SESSION STATE
@@ -557,10 +553,6 @@ elif menu == "➕ Tambah Buku":
 # =========================
 #     UPDATE BUKU
 # =========================
-
-# =========================================================
-# UPDATE BUKU
-# =========================================================
 
 elif menu == "✏️ Update Buku":
 
