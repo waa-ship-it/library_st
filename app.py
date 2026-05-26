@@ -216,6 +216,88 @@ class Library:
 
         return False
 
+# ==========================
+# UPDATE BUKU
+# ==========================
+
+# =========================================================
+# UPDATE BUKU
+# =========================================================
+
+elif menu == "✏️ Update Buku":
+
+    st.title("✏️ Update Data Buku")
+
+    kode = st.text_input(
+        "🆔 Masukkan kode buku"
+    )
+
+    judul = st.text_input(
+        "📖 Judul baru"
+    )
+
+    penulis = st.text_input(
+        "✍️ Penulis baru"
+    )
+
+    kategori = st.selectbox(
+        "📚 Kategori baru",
+        [
+            "Romance",
+            "Fiksi",
+            "Nonfiksi",
+            "Referensi",
+            "Self Improvement"
+        ]
+    )
+
+    tahun = st.number_input(
+        "📅 Tahun baru",
+        2000,
+        2025
+    )
+
+    rating = st.slider(
+        "⭐ Rating baru",
+        1.0,
+        5.0,
+        4.0
+    )
+
+    status = st.selectbox(
+        "📌 Status baru",
+        [
+            "Tersedia",
+            "Dipinjam"
+        ]
+    )
+
+    if st.button("✨ Update Buku"):
+
+        hasil = library.update_buku(
+            kode,
+            judul,
+            penulis,
+            kategori,
+            tahun,
+            rating,
+            status
+        )
+
+        if hasil:
+
+            st.success(
+                f"✅ Buku dengan kode {kode} berhasil diupdate!"
+            )
+
+            st.balloons()
+
+        else:
+
+            st.error(
+                "❌ Kode buku tidak ditemukan"
+            )
+
 
 # =========================================================
 # SESSION STATE
@@ -296,6 +378,7 @@ menu = st.sidebar.selectbox(
         "🏠 Home",
         "📚 Koleksi Buku",
         "➕ Tambah Buku",
+        "✏️ Update Buku",
         "🔍 Cari Buku",
         "🗑️ Hapus Buku",
         "📊 Status akhir"
@@ -586,7 +669,7 @@ elif menu == "🗑️ Hapus Buku":
             )
 
 # =========================================================
-# STATISTIK
+# STATUS AKHIR PERPUSTAKAAN
 # =========================================================
 
 elif menu == "📊 Status Akhir":
