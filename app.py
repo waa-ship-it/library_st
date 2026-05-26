@@ -565,7 +565,6 @@ elif menu == "✏️ Update Buku":
 
     judul = st.text_input(
         "📖 Judul baru"                                                                                                                  INI TARUH DIMANA?
-
     )
 
     penulis = st.text_input(
