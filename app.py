@@ -469,11 +469,13 @@ elif menu == "➕ Tambah Buku":
     kategori = st.selectbox(
         "📚 Kategori",
         [
-            "Romance",
-            "Nonfiksi",
-            "Referensi",
-            "Drama Persahabatan",
-            "Self Improvement"
+            "romance",
+            "fiksi",
+            "nonfiksi",
+            "referensi",
+            "drama persahabatan",
+            "teknologi"
+            "self Improvement"
         ]
     )
 
@@ -640,7 +642,7 @@ elif menu == "📊 Status Akhir":
 st.markdown("""
 <div class="footer">
 
-✨ Where code meets books and creativity ✨
+Where code meets books and creativity
 
 </div>
 """, unsafe_allow_html=True)
