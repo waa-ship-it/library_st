@@ -5,8 +5,8 @@ import streamlit as st
 # =========================================================
 
 st.set_page_config(
-    page_title="📚 Digital Library",
-    page_icon="📖",
+    page_title="Digital Library",
+    page_icon="📚",
     layout="wide"
 )
 
@@ -236,8 +236,6 @@ else:
 #                         SIDEBAR
 # =========================================================
 
-st.sidebar.title("📚 Digital Library")
-
 st.sidebar.markdown("""
 # 🌸 Library Menu
 Temukan semua fitur favoritmu di sini 👇
@@ -251,21 +249,18 @@ menu = st.sidebar.radio(
         "➕ Tambah Buku",
         "🔍 Cari Buku",
         "🗑️ Hapus Buku",
-        "📊 Statistik"
+        "📊 Status"
     ]
 )
 
 st.sidebar.markdown("---")
 
 st.sidebar.markdown("""
-### 🌈 Kategori Buku
-
-📖 Fiksi  
-🧠 Nonfiksi  
-📚 Referensi  
-✨ Self Improvement  
-☕ Novel Modern  
-
+### 📝 Kategori Buku
+- Fiksi  
+- Nonfiksi  
+- Referensi  
+- Self Improvement  
 """)
 
 # =========================================================
@@ -476,9 +471,9 @@ elif menu == "🗑️ Hapus Buku":
 # STATISTIK
 # =========================================================
 
-elif menu == "📊 Statistik":
+elif menu == "📊 Status":
 
-    st.title("📊 Statistik Perpustakaan")
+    st.title("📊 Status akhir perpustakaan")
 
     total = len(perpus.tampilkan_buku())
 
