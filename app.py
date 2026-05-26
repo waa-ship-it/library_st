@@ -1,35 +1,41 @@
 import streamlit as st
 
 # =========================================================
-#                    KONFIGURASI HALAMAN
+# KONFIGURASI HALAMAN
 # =========================================================
 
 st.set_page_config(
-    page_title="Digital Library",
+    page_title="Libraverse",
     page_icon="📚",
     layout="wide"
 )
 
 # =========================================================
-#                     CSS AESTHETIC
+# CSS CUSTOM
 # =========================================================
 
 st.markdown("""
 <style>
 
 .main {
-    background-color: #f8f6ff;
+    background-color: #F6F8FC;
 }
 
-.big-title {
+.header-box {
+    background: linear-gradient(to right, #6C63FF, #8E7CFF);
+    padding: 35px;
+    border-radius: 25px;
+    color: white;
+    margin-bottom: 25px;
+}
+
+.header-title {
     font-size: 45px;
     font-weight: bold;
-    color: #6c63ff;
 }
 
-.subtitle {
+.header-subtitle {
     font-size: 18px;
-    color: #555;
 }
 
 .card {
@@ -37,49 +43,76 @@ st.markdown("""
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .book-card {
-    background: linear-gradient(to right, #fdfbfb, #ebedee);
-    padding: 18px;
-    border-radius: 18px;
-    margin-bottom: 15px;
-    box-shadow: 0px 2px 10px rgba(0,0,0,0.08);
+    background: linear-gradient(to right, #ffffff, #f2f5ff);
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
 }
 
-.sidebar .sidebar-content {
-    background-color: #f4f0ff;
+.footer {
+    text-align: center;
+    color: gray;
+    margin-top: 30px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-#                     LINKED LIST NODE
+# LINKED LIST NODE
 # =========================================================
 
 class Node:
-    def __init__(self, kode, judul, penulis, kategori, tahun, status):
+
+    def __init__(
+        self,
+        kode,
+        judul,
+        penulis,
+        kategori,
+        tahun,
+        rating,
+        status
+    ):
+
         self.kode = kode
         self.judul = judul
         self.penulis = penulis
         self.kategori = kategori
         self.tahun = tahun
+        self.rating = rating
         self.status = status
         self.next = None
 
 
 # =========================================================
-#                 LINKED LIST PERPUSTAKAAN
+# LINKED LIST
 # =========================================================
 
-class LinkedListPerpus:
+class Library:
+
     def __init__(self):
         self.head = None
 
-    # Tambah buku
-    def tambah_buku(self, kode, judul, penulis, kategori, tahun, status):
+    # =====================================================
+    # TAMBAH BUKU
+    # =====================================================
+
+    def tambah_buku(
+        self,
+        kode,
+        judul,
+        penulis,
+        kategori,
+        tahun,
+        rating,
+        status
+    ):
 
         buku_baru = Node(
             kode,
@@ -87,6 +120,7 @@ class LinkedListPerpus:
             penulis,
             kategori,
             tahun,
+            rating,
             status
         )
 
@@ -94,202 +128,222 @@ class LinkedListPerpus:
             self.head = buku_baru
 
         else:
-            temp = self.head
 
-            while temp.next:
-                temp = temp.next
+            current = self.head
 
-            temp.next = buku_baru
+            while current.next:
+                current = current.next
 
-    # Tampilkan semua buku
+            current.next = buku_baru
+
+    # =====================================================
+    # TAMPILKAN BUKU
+    # =====================================================
+
     def tampilkan_buku(self):
 
         data = []
 
-        temp = self.head
+        current = self.head
 
-        while temp:
+        while current:
 
             data.append({
-                "kode": temp.kode,
-                "judul": temp.judul,
-                "penulis": temp.penulis,
-                "kategori": temp.kategori,
-                "tahun": temp.tahun,
-                "status": temp.status
+                "kode": current.kode,
+                "judul": current.judul,
+                "penulis": current.penulis,
+                "kategori": current.kategori,
+                "tahun": current.tahun,
+                "rating": current.rating,
+                "status": current.status
             })
 
-            temp = temp.next
+            current = current.next
 
         return data
 
-    # Cari buku
+    # =====================================================
+    # CARI BUKU
+    # =====================================================
+
     def cari_buku(self, keyword):
 
         hasil = []
 
-        temp = self.head
+        current = self.head
 
-        while temp:
+        while current:
 
-            if keyword.lower() in temp.judul.lower():
+            if keyword.lower() in current.judul.lower():
 
                 hasil.append({
-                    "kode": temp.kode,
-                    "judul": temp.judul,
-                    "penulis": temp.penulis,
-                    "kategori": temp.kategori,
-                    "tahun": temp.tahun,
-                    "status": temp.status
+                    "kode": current.kode,
+                    "judul": current.judul,
+                    "penulis": current.penulis,
+                    "kategori": current.kategori,
+                    "tahun": current.tahun,
+                    "rating": current.rating,
+                    "status": current.status
                 })
 
-            temp = temp.next
+            current = current.next
 
         return hasil
 
-    # Hapus buku
+    # =====================================================
+    # HAPUS BUKU
+    # =====================================================
+
     def hapus_buku(self, kode):
 
-        temp = self.head
-
+        current = self.head
         prev = None
 
-        if temp and temp.kode == kode:
-            self.head = temp.next
-            return True
+        while current:
 
-        while temp and temp.kode != kode:
-            prev = temp
-            temp = temp.next
+            if current.kode == kode:
 
-        if temp is None:
-            return False
+                if prev is None:
+                    self.head = current.next
 
-        prev.next = temp.next
-        return True
+                else:
+                    prev.next = current.next
+
+                return True
+
+            prev = current
+            current = current.next
+
+        return False
 
 
 # =========================================================
-#                     SESSION STATE
+# SESSION STATE
 # =========================================================
 
-if "perpus" not in st.session_state:
+if "library" not in st.session_state:
 
-    st.session_state.perpus = LinkedListPerpus()
+    st.session_state.library = Library()
 
-    perpus = st.session_state.perpus
+    library = st.session_state.library
 
     # =====================================================
-    #                  DATA AWAL BUKU
+    # DATA AWAL
     # =====================================================
 
-    perpus.tambah_buku(
+    library.tambah_buku(
         "BK001",
-        "Laut bercerita",
-        "Leila S. Chudori",
-        "Fiksi",
-        "2017",
-        "Tersedia"
-    )
-
-    perpus.tambah_buku(
-        "BK002",
         "Atomic Habits",
         "James Clear",
         "Nonfiksi",
         "2018",
+        "4.9",
+        "Tersedia"
+    )
+
+    library.tambah_buku(
+        "BK002",
+        "Eccedentesiast",
+        "itaKRN",
+        "Drama Persahabatan",
+        "2022",
+        "4.9",
         "Dipinjam"
     )
 
-    perpus.tambah_buku(
+    library.tambah_buku(
         "BK003",
         "Ensiklopedia Sains Modern",
         "National Geographic",
         "Referensi",
         "2022",
+        "4.8",
         "Tersedia"
     )
 
-    perpus.tambah_buku(
+    library.tambah_buku(
         "BK004",
+        "Mariposa",
+        "Luluk HF",
+        "Romance",
+        "2018",
+        "4.8",
+        "Tersedia"
+    )
+
+    library.tambah_buku(
+        "BK005",
         "The Psychology of Money",
         "Morgan Housel",
-        "Nonfiksi",
+        "Self Improvement",
         "2020",
-        "Tersedia"
-    )
-
-    perpus.tambah_buku(
-        "BK005",
-        "Itakrn",
-        "Eccedentesiat",
-        "Fiksi",
-        "2023",
+        "4.9",
         "Dipinjam"
     )
 
 else:
-    perpus = st.session_state.perpus
-
+    library = st.session_state.library
 
 # =========================================================
-#                         SIDEBAR
+# SIDEBAR
 # =========================================================
 
-st.sidebar.markdown("""
-# 🌸 Library Menu
-Temukan semua fitur favoritmu di sini 👇
-""")
+st.sidebar.title("📚 Libraverse")
 
-menu = st.sidebar.radio(
-    "Pilih Menu :",
+menu = st.sidebar.selectbox(
+    "✨ Pilih Menu",
     [
         "🏠 Home",
         "📚 Koleksi Buku",
         "➕ Tambah Buku",
         "🔍 Cari Buku",
         "🗑️ Hapus Buku",
-        "📊 Status"
+        "📊 Statistik"
     ]
 )
 
 st.sidebar.markdown("---")
 
 st.sidebar.markdown("""
-### 📝 Kategori Buku
-- Fiksi  
-- Nonfiksi  
-- Referensi  
-- Self Improvement  
+### 🌸 Kategori Populer
+
+📖 Romance  
+🧠 Nonfiksi  
+📚 Referensi  
+🌧️ Emotional Story  
+✨ Self Improvement  
+
 """)
 
 # =========================================================
-#                         HOME
+# HOME
 # =========================================================
 
 if menu == "🏠 Home":
 
-    st.markdown(
-        '<div class="big-title">📚 Digital Library</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown("""
+    <div class="header-box">
 
-    st.markdown(
-        '<div class="subtitle">✨ Kelola koleksi bukumu dengan cara yang lebih modern ✨</div>',
-        unsafe_allow_html=True
-    )
+    <div class="header-title">
+    📚 Libraverse
+    </div>
 
-    st.markdown("---")
+    <div class="header-subtitle">
+    Ruang digital penuh cerita, pengetahuan, dan imajinasi ✨
+    </div>
 
-    total = len(perpus.tampilkan_buku())
+    </div>
+    """, unsafe_allow_html=True)
+
+    total = len(library.tampilkan_buku())
 
     tersedia = sum(
-        1 for b in perpus.tampilkan_buku()
+        1 for b in library.tampilkan_buku()
         if b["status"] == "Tersedia"
     )
 
     dipinjam = sum(
-        1 for b in perpus.tampilkan_buku()
+        1 for b in library.tampilkan_buku()
         if b["status"] == "Dipinjam"
     )
 
@@ -297,95 +351,129 @@ if menu == "🏠 Home":
 
     with col1:
         st.metric("📚 Total Buku", total)
+
     with col2:
         st.metric("🟢 Tersedia", tersedia)
+
     with col3:
         st.metric("📕 Dipinjam", dipinjam)
 
     st.markdown("---")
 
     st.markdown("""
-    ### yang bisa kalian lakukan :
+    ### 🌸 Yang Bisa Kamu Lakukan
 
-    📚 tambahkan koleksi buku favoritmu  
-    🔍 cari buku dengan cepat dan mudah  
-    ✨ kelola perpustakaan digital dengan rapi  
-    📖 jelajahi berbagai kategori buku modern  
-    ☕ nikmati pengalaman perpustakaan digital yang modern  
+    📚 Tambahkan koleksi buku favoritmu  
+    🔍 Cari buku dengan cepat dan mudah  
+    ✨ Kelola perpustakaan digital dengan lebih rapi  
+    📖 Jelajahi buku modern dari berbagai kategori  
+    ☕ Nikmati pengalaman membaca yang cozy dan aesthetic  
 
     """)
 
     st.markdown("---")
 
-    st.subheader("🔥 Buku Trending Minggu Ini")
+    st.subheader("🔥 Trending Minggu Ini")
 
     st.markdown("""
     <div class="book-card">
-    <h4>📖 Atomic Habits</h4>
+
+    <h3>📖 Atomic Habits</h3>
+
     <p>✍️ James Clear</p>
-    <p>⭐ 4.8 | 🧠 Self Improvement</p>
+
+    <p>⭐ 4.9 | 🧠 Self Improvement</p>
+
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="book-card">
-    <h4>📖 Eccedentesiast</h4>
-    <p>✍️ Itakrn</p>
-    <p>⭐ 4.9 | 🤝 Friendship Story</p>
+
+    <h3>📖 Eccedentesiast</h3>
+
+    <p>✍️ itaKRN</p>
+
+    <p>⭐ 4.9 | 🥀 Drama Persahabatan</p>
+
     </div>
     """, unsafe_allow_html=True)
 
 # =========================================================
-#                     KOLEKSI BUKU
+# KOLEKSI BUKU
 # =========================================================
 
 elif menu == "📚 Koleksi Buku":
 
     st.title("📚 Koleksi Buku")
 
-    data = perpus.tampilkan_buku()
+    data = library.tampilkan_buku()
 
-    if data:
-        for buku in data:
-            warna = "🟢" if buku["status"] == "Tersedia" else "🔴"
+    kategori_filter = st.selectbox(
+        "📖 Pilih Kategori",
+        [
+            "Semua",
+            "Romance",
+            "Nonfiksi",
+            "Referensi",
+            "Drama Persahabatan",
+            "Self Improvement"
+        ]
+    )
 
-            st.markdown(f"""
-            <div class="book-card">
+    st.markdown("---")
 
-            <h3>📖 {buku['judul']}</h3>
+    for buku in data:
 
-            <p>✍️ Penulis : {buku['penulis']}</p>
-            <p>📚 Kategori : {buku['kategori']}</p>
-            <p>📅 Tahun : {buku['tahun']}</p>
-            <p>{warna} Status : {buku['status']}</p>
-            <p>🆔 Kode : {buku['kode']}</p>
+        if kategori_filter != "Semua":
 
-            </div>
-            """, unsafe_allow_html=True)
+            if buku["kategori"] != kategori_filter:
+                continue
 
-    else:
-        st.warning("⚠️ Belum ada buku !")
+        warna = "🟢" if buku["status"] == "Tersedia" else "🔴"
+
+        st.markdown(f"""
+        <div class="book-card">
+
+        <h3>📖 {buku['judul']}</h3>
+
+        <p>✍️ Penulis : {buku['penulis']}</p>
+
+        <p>📚 Kategori : {buku['kategori']}</p>
+
+        <p>📅 Tahun : {buku['tahun']}</p>
+
+        <p>⭐ Rating : {buku['rating']}</p>
+
+        <p>{warna} Status : {buku['status']}</p>
+
+        <p>🆔 Kode Buku : {buku['kode']}</p>
+
+        </div>
+        """, unsafe_allow_html=True)
 
 # =========================================================
-#                     TAMBAH BUKU
+# TAMBAH BUKU
 # =========================================================
 
 elif menu == "➕ Tambah Buku":
 
-    st.title("➕ Tambah Buku Baru")
+    st.title("➕ Tambahkan Buku Baru")
 
     kode = st.text_input("🆔 Kode Buku")
+
     judul = st.text_input("📖 Judul Buku")
+
     penulis = st.text_input("✍️ Nama Penulis")
-    
+
     kategori = st.selectbox(
-        "📚 Pilih Kategori",
+        "📚 Kategori",
         [
-            "Fiksi",
+            "Romance",
             "Nonfiksi",
             "Referensi",
-            "Self Improvement",
-            "Novel"
+            "Drama Persahabatan",
+            "Self Improvement"
         ]
     )
 
@@ -393,6 +481,13 @@ elif menu == "➕ Tambah Buku":
         "📅 Tahun Terbit",
         2000,
         2025
+    )
+
+    rating = st.slider(
+        "⭐ Rating Buku",
+        1.0,
+        5.0,
+        4.0
     )
 
     status = st.selectbox(
@@ -405,19 +500,24 @@ elif menu == "➕ Tambah Buku":
 
     if st.button("✨ Tambahkan Buku"):
 
-        perpus.tambah_buku(
+        library.tambah_buku(
             kode,
             judul,
             penulis,
             kategori,
             tahun,
+            rating,
             status
         )
 
-        st.success(f"✅ Buku '{judul}' berhasil ditambahkan!")
+        st.success(
+            f"📚 Buku '{judul}' berhasil ditambahkan!"
+        )
+
+        st.balloons()
 
 # =========================================================
-#                       CARI BUKU
+# CARI BUKU
 # =========================================================
 
 elif menu == "🔍 Cari Buku":
@@ -425,25 +525,32 @@ elif menu == "🔍 Cari Buku":
     st.title("🔍 Cari Buku")
 
     keyword = st.text_input(
-        "Cari berdasarkan judul buku"
+        "Masukkan judul buku"
     )
 
+    hasil = library.cari_buku(keyword)
+
     if keyword:
-        hasil = perpus.cari_buku(keyword)
 
         if hasil:
-            st.success(f"✅ Ditemukan {len(hasil)} buku")
+
+            st.success(
+                f"✨ Ditemukan {len(hasil)} buku"
+            )
 
             for buku in hasil:
+
                 st.markdown(f"""
                 <div class="book-card">
 
                 <h3>📖 {buku['judul']}</h3>
-                
+
                 <p>✍️ {buku['penulis']}</p>
+
                 <p>📚 {buku['kategori']}</p>
-                <p>📅 {buku['tahun']}</p>
-                
+
+                <p>⭐ {buku['rating']}</p>
+
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -451,51 +558,62 @@ elif menu == "🔍 Cari Buku":
             st.error("❌ Buku tidak ditemukan")
 
 # =========================================================
-#                        HAPUS BUKU
+# HAPUS BUKU
 # =========================================================
 
 elif menu == "🗑️ Hapus Buku":
 
-    st.title("🗑️ Kelola Koleksi Buku")
+    st.title("🗑️ Kelola Buku")
 
-    kode = st.text_input("Masukkan kode buku")
+    kode = st.text_input(
+        "Masukkan kode buku"
+    )
 
     if st.button("❌ Hapus Buku"):
-        hasil = perpus.hapus_buku(kode)
+
+        hasil = library.hapus_buku(kode)
+
         if hasil:
-            st.success("✅ Buku berhasil dihapus")
+
+            st.success(
+                "✨ Buku berhasil dihapus"
+            )
+
         else:
-            st.error("❌ Buku tidak ditemukan")
+
+            st.error(
+                "❌ Buku tidak ditemukan"
+            )
 
 # =========================================================
 # STATISTIK
 # =========================================================
 
-elif menu == "📊 Status":
+elif menu == "📊 Statistik":
 
-    st.title("📊 Status akhir perpustakaan")
+    st.title("📊 Statistik Perpustakaan")
 
-    total = len(perpus.tampilkan_buku())
+    total = len(library.tampilkan_buku())
 
     tersedia = sum(
-        1 for b in perpus.tampilkan_buku()
+        1 for b in library.tampilkan_buku()
         if b["status"] == "Tersedia"
     )
 
     dipinjam = sum(
-        1 for b in perpus.tampilkan_buku()
+        1 for b in library.tampilkan_buku()
         if b["status"] == "Dipinjam"
     )
 
-    fiksi = sum(
-        1 for b in perpus.tampilkan_buku()
-        if b["kategori"] == "Fiksi"
+    romance = sum(
+        1 for b in library.tampilkan_buku()
+        if b["kategori"] == "Romance"
     )
 
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.metric("📚 Total", total)
+        st.metric("📚 Total Buku", total)
 
     with col2:
         st.metric("🟢 Tersedia", tersedia)
@@ -504,15 +622,28 @@ elif menu == "📊 Status":
         st.metric("📕 Dipinjam", dipinjam)
 
     with col4:
-        st.metric("🌸 Fiksi", fiksi)
+        st.metric("🌸 Romance", romance)
 
     st.markdown("---")
 
-    st.subheader("✨ Ringkasan Perpustakaan")
-
     st.info(f"""
     📚 Total koleksi buku : {total}
+
     🟢 Buku tersedia : {tersedia}
+
     📕 Buku dipinjam : {dipinjam}
-    🌸 Buku kategori fiksi : {fiksi}
+
+    🌸 Buku romance : {romance}
     """)
+
+# =========================================================
+# FOOTER
+# =========================================================
+
+st.markdown("""
+<div class="footer">
+
+✨ Dibuat dengan Python, Streamlit, dan sedikit cinta terhadap buku 📚
+
+</div>
+""", unsafe_allow_html=True)
