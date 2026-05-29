@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # =====================================================
-# CSS
+# CSS ESTETIK
 # =====================================================
 
 st.markdown("""
@@ -35,7 +35,7 @@ st.markdown("""
 .book-card {
     background: white;
     padding: 20px;
-    border-radius: 18px;
+    border-radius: 20px;
     margin-bottom: 20px;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
 }
@@ -44,6 +44,10 @@ st.markdown("""
     text-align: center;
     color: gray;
     margin-top: 40px;
+}
+
+.sidebar .sidebar-content {
+    background-color: #ffffff;
 }
 
 </style>
@@ -72,6 +76,7 @@ CREATE TABLE IF NOT EXISTS books (
     penulis TEXT,
     kategori TEXT,
     tahun INTEGER,
+    rating REAL,
     status TEXT
 
 )
@@ -109,26 +114,55 @@ if cursor.fetchone()[0] == 0:
 
     books = [
 
-        ("BK001", "Atomic Habits", "James Clear", "Self Improvement", 2018, "Tersedia"),
-        ("BK002", "Harry Potter", "J.K Rowling", "Fantasi", 2001, "Tersedia"),
-        ("BK003", "Laskar Pelangi", "Andrea Hirata", "Pendidikan", 2005, "Tersedia"),
-        ("BK004", "Bumi", "Tere Liye", "Fantasi", 2014, "Tersedia"),
-        ("BK005", "Sherlock Holmes", "Arthur Conan Doyle", "Misteri", 1892, "Tersedia"),
-        ("BK006", "Dilan 1990", "Pidi Baiq", "Romance", 2014, "Tersedia"),
-        ("BK007", "Filosofi Teras", "Henry Manampiring", "Self Improvement", 2019, "Tersedia"),
-        ("BK008", "One Piece Vol 1", "Eiichiro Oda", "Komik", 1997, "Tersedia"),
-        ("BK009", "Naruto Vol 1", "Masashi Kishimoto", "Komik", 1999, "Tersedia"),
-        ("BK010", "Laut Bercerita", "Leila S. Chudori", "Fiksi", 2017, "Tersedia"),
-        ("BK011", "Negeri 5 Menara", "Ahmad Fuadi", "Pendidikan", 2009, "Tersedia"),
-        ("BK012", "The Psychology of Money", "Morgan Housel", "Bisnis", 2020, "Tersedia"),
-        ("BK013", "Rich Dad Poor Dad", "Robert Kiyosaki", "Bisnis", 1997, "Tersedia"),
-        ("BK014", "Ayat Ayat Cinta", "Habiburrahman", "Religi", 2004, "Tersedia"),
-        ("BK015", "Cantik Itu Luka", "Eka Kurniawan", "Fiksi", 2002, "Tersedia")
+        # SELF IMPROVEMENT
+        ("BK001", "Atomic Habits", "James Clear", "Self Improvement", 2018, 4.9, "Tersedia"),
+        ("BK002", "Filosofi Teras", "Henry Manampiring", "Self Improvement", 2019, 4.8, "Tersedia"),
+        ("BK003", "Sebuah Seni Bersikap Bodo Amat", "Mark Manson", "Self Improvement", 2016, 4.7, "Tersedia"),
+
+        # BISNIS
+        ("BK004", "Rich Dad Poor Dad", "Robert Kiyosaki", "Bisnis", 1997, 4.8, "Tersedia"),
+        ("BK005", "The Psychology of Money", "Morgan Housel", "Bisnis", 2020, 4.9, "Tersedia"),
+
+        # FANTASI
+        ("BK006", "Harry Potter", "J.K Rowling", "Fantasi", 2001, 4.9, "Tersedia"),
+        ("BK007", "Bumi", "Tere Liye", "Fantasi", 2014, 4.8, "Tersedia"),
+        ("BK008", "Bulan", "Tere Liye", "Fantasi", 2015, 4.8, "Tersedia"),
+        ("BK009", "Percy Jackson", "Rick Riordan", "Fantasi", 2005, 4.8, "Tersedia"),
+
+        # ROMANCE
+        ("BK010", "Dilan 1990", "Pidi Baiq", "Romance", 2014, 4.7, "Tersedia"),
+        ("BK011", "Mariposa", "Luluk HF", "Romance", 2018, 4.8, "Tersedia"),
+        ("BK012", "Dear Nathan", "Erisca Febriani", "Romance", 2016, 4.7, "Tersedia"),
+
+        # PENDIDIKAN
+        ("BK013", "Laskar Pelangi", "Andrea Hirata", "Pendidikan", 2005, 4.9, "Tersedia"),
+        ("BK014", "Negeri 5 Menara", "Ahmad Fuadi", "Pendidikan", 2009, 4.8, "Tersedia"),
+        ("BK015", "Fisika Modern", "Giancoli", "Pendidikan", 2018, 4.7, "Tersedia"),
+
+        # KOMIK
+        ("BK016", "One Piece Vol 1", "Eiichiro Oda", "Komik", 1997, 4.9, "Tersedia"),
+        ("BK017", "Naruto Vol 1", "Masashi Kishimoto", "Komik", 1999, 4.8, "Tersedia"),
+        ("BK018", "Doraemon", "Fujiko F Fujio", "Komik", 1970, 4.8, "Tersedia"),
+
+        # FIKSI
+        ("BK019", "Laut Bercerita", "Leila S. Chudori", "Fiksi", 2017, 4.9, "Tersedia"),
+        ("BK020", "Cantik Itu Luka", "Eka Kurniawan", "Fiksi", 2002, 4.8, "Tersedia"),
+
+        # MISTERI
+        ("BK021", "Sherlock Holmes", "Arthur Conan Doyle", "Misteri", 1892, 4.9, "Tersedia"),
+        ("BK022", "The Da Vinci Code", "Dan Brown", "Misteri", 2003, 4.7, "Tersedia"),
+
+        # RELIGI
+        ("BK023", "Ayat Ayat Cinta", "Habiburrahman", "Religi", 2004, 4.7, "Tersedia"),
+
+        # TEKNOLOGI
+        ("BK024", "Pemrograman Python", "Budi Raharjo", "Teknologi", 2021, 4.8, "Tersedia"),
+        ("BK025", "Belajar HTML CSS", "Andi Offset", "Teknologi", 2020, 4.7, "Tersedia")
 
     ]
 
     cursor.executemany(
-        "INSERT INTO books VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO books VALUES (?, ?, ?, ?, ?, ?, ?)",
         books
     )
 
@@ -143,7 +177,7 @@ st.sidebar.markdown("""
 
 ### Digital Library System ✨
 
-Kelola buku favoritmu dengan mudah 📖
+Kelola dan pinjam buku favoritmu dengan mudah 💜
 """)
 
 st.sidebar.markdown("---")
@@ -169,8 +203,7 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 📖 Quotes Hari Ini
 
-"Books are a uniquely portable magic."
-— Stephen King
+"Books are the quietest and most constant of friends."
 """)
 
 # =====================================================
@@ -185,7 +218,7 @@ if menu == "🏠 Home":
     <h1>📚 Libraverse</h1>
 
     <p>
-    Sistem Perpustakaan Digital Modern
+    Selamat datang di perpustakaan digital modern ✨
     </p>
 
     </div>
@@ -231,8 +264,9 @@ if menu == "🏠 Home":
     st.subheader("✨ Tentang Libraverse")
 
     st.write("""
-    Libraverse adalah aplikasi perpustakaan digital
-    sederhana untuk mencari dan meminjam buku 📖
+    Libraverse adalah aplikasi perpustakaan digital sederhana
+    yang membantu pengguna mencari, meminjam,
+    dan mengelola buku dengan mudah 📖
     """)
 
 # =====================================================
@@ -273,17 +307,19 @@ elif menu == "📚 Koleksi Buku":
         st.markdown(f"""
         <div class="book-card">
 
-        <h3>📖 {buku['judul']}</h3>
+        <h2>📖 {buku['judul']}</h2>
 
         <p>✍️ Penulis : {buku['penulis']}</p>
 
-        <p>📚 Kategori : {buku['kategori']}</p>
+        <p>📚 Genre : {buku['kategori']}</p>
 
         <p>📅 Tahun : {buku['tahun']}</p>
 
-        <p>{warna} {buku['status']}</p>
+        <p>⭐ Rating : {buku['rating']}</p>
 
-        <p>🆔 {buku['kode']}</p>
+        <p>{warna} Status : {buku['status']}</p>
+
+        <p>🆔 Kode Buku : {buku['kode']}</p>
 
         </div>
         """, unsafe_allow_html=True)
@@ -319,11 +355,13 @@ elif menu == "🔍 Cari Buku":
                 st.markdown(f"""
                 <div class="book-card">
 
-                <h3>📖 {buku['judul']}</h3>
+                <h2>📖 {buku['judul']}</h2>
 
                 <p>✍️ {buku['penulis']}</p>
 
                 <p>📚 {buku['kategori']}</p>
+
+                <p>⭐ {buku['rating']}</p>
 
                 </div>
                 """, unsafe_allow_html=True)
@@ -360,7 +398,7 @@ elif menu == "📖 Pinjam Buku":
 
         if buku:
 
-            if buku[5] == "Dipinjam":
+            if buku[6] == "Dipinjam":
 
                 st.error("❌ Buku sedang dipinjam")
 
@@ -474,7 +512,7 @@ elif menu == "✏️ Perpanjang Peminjaman":
 
             conn.commit()
 
-            st.success("✅ Peminjaman berhasil diperpanjang")
+            st.success("✅ Berhasil diperpanjang")
 
             st.info(
                 f"📅 Batas baru: "
@@ -600,7 +638,7 @@ elif menu == "🗑️ Hapus Riwayat":
         100000
     )
 
-    if st.button("Hapus"):
+    if st.button("Hapus Riwayat"):
 
         cursor.execute(
             "DELETE FROM peminjaman WHERE id=?",
@@ -618,7 +656,7 @@ elif menu == "🗑️ Hapus Riwayat":
 st.markdown("""
 <div class="footer">
 
-📚 Libraverse — Digital Library System
+📚 Libraverse — Modern Digital Library
 
 </div>
 """, unsafe_allow_html=True)
