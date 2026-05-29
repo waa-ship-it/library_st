@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # =====================================================
-# CSS ESTETIK
+# CSS
 # =====================================================
 
 st.markdown("""
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS peminjaman (
 conn.commit()
 
 # =====================================================
-# DATA AWAL BUKU
+# DATA BUKU AWAL
 # =====================================================
 
 cursor.execute("SELECT COUNT(*) FROM books")
@@ -110,15 +110,20 @@ if cursor.fetchone()[0] == 0:
     books = [
 
         ("BK001", "Atomic Habits", "James Clear", "Self Improvement", 2018, "Tersedia"),
-        ("BK002", "Laskar Pelangi", "Andrea Hirata", "Pendidikan", 2005, "Tersedia"),
-        ("BK003", "Bumi", "Tere Liye", "Fantasi", 2014, "Tersedia"),
-        ("BK004", "Harry Potter", "J.K Rowling", "Fantasi", 2001, "Tersedia"),
+        ("BK002", "Harry Potter", "J.K Rowling", "Fantasi", 2001, "Tersedia"),
+        ("BK003", "Laskar Pelangi", "Andrea Hirata", "Pendidikan", 2005, "Tersedia"),
+        ("BK004", "Bumi", "Tere Liye", "Fantasi", 2014, "Tersedia"),
         ("BK005", "Sherlock Holmes", "Arthur Conan Doyle", "Misteri", 1892, "Tersedia"),
         ("BK006", "Dilan 1990", "Pidi Baiq", "Romance", 2014, "Tersedia"),
         ("BK007", "Filosofi Teras", "Henry Manampiring", "Self Improvement", 2019, "Tersedia"),
         ("BK008", "One Piece Vol 1", "Eiichiro Oda", "Komik", 1997, "Tersedia"),
         ("BK009", "Naruto Vol 1", "Masashi Kishimoto", "Komik", 1999, "Tersedia"),
-        ("BK010", "Laut Bercerita", "Leila S. Chudori", "Fiksi", 2017, "Tersedia")
+        ("BK010", "Laut Bercerita", "Leila S. Chudori", "Fiksi", 2017, "Tersedia"),
+        ("BK011", "Negeri 5 Menara", "Ahmad Fuadi", "Pendidikan", 2009, "Tersedia"),
+        ("BK012", "The Psychology of Money", "Morgan Housel", "Bisnis", 2020, "Tersedia"),
+        ("BK013", "Rich Dad Poor Dad", "Robert Kiyosaki", "Bisnis", 1997, "Tersedia"),
+        ("BK014", "Ayat Ayat Cinta", "Habiburrahman", "Religi", 2004, "Tersedia"),
+        ("BK015", "Cantik Itu Luka", "Eka Kurniawan", "Fiksi", 2002, "Tersedia")
 
     ]
 
@@ -133,22 +138,40 @@ if cursor.fetchone()[0] == 0:
 # SIDEBAR
 # =====================================================
 
-st.sidebar.title("📚 Libraverse")
+st.sidebar.markdown("""
+# 📚 Libraverse
 
-menu = st.sidebar.selectbox(
-    "Pilih Menu",
+### Digital Library System ✨
+
+Kelola buku favoritmu dengan mudah 📖
+""")
+
+st.sidebar.markdown("---")
+
+menu = st.sidebar.radio(
+    "📌 Pilih Menu",
     [
 
         "🏠 Home",
         "📚 Koleksi Buku",
         "🔍 Cari Buku",
         "📖 Pinjam Buku",
-        "✏️ Update Peminjaman",
+        "✏️ Perpanjang Peminjaman",
         "📥 Kembalikan Buku",
-        "📋 Riwayat Peminjaman"
+        "📋 Riwayat Peminjaman",
+        "🗑️ Hapus Riwayat"
 
     ]
 )
+
+st.sidebar.markdown("---")
+
+st.sidebar.info("""
+📖 Quotes Hari Ini
+
+"Books are a uniquely portable magic."
+— Stephen King
+""")
 
 # =====================================================
 # HOME
@@ -162,7 +185,7 @@ if menu == "🏠 Home":
     <h1>📚 Libraverse</h1>
 
     <p>
-    Sistem Perpustakaan Digital Sederhana dan Modern
+    Sistem Perpustakaan Digital Modern
     </p>
 
     </div>
@@ -205,19 +228,12 @@ if menu == "🏠 Home":
 
     st.markdown("---")
 
-    st.subheader("✨ Buku Populer")
+    st.subheader("✨ Tentang Libraverse")
 
-    st.markdown("""
-    <div class="book-card">
-
-    <h3>📖 Atomic Habits</h3>
-
-    <p>✍️ James Clear</p>
-
-    <p>📚 Self Improvement</p>
-
-    </div>
-    """, unsafe_allow_html=True)
+    st.write("""
+    Libraverse adalah aplikasi perpustakaan digital
+    sederhana untuk mencari dan meminjam buku 📖
+    """)
 
 # =====================================================
 # KOLEKSI BUKU
@@ -232,18 +248,16 @@ elif menu == "📚 Koleksi Buku":
         conn
     )
 
+    kategori_db = pd.read_sql_query(
+        "SELECT DISTINCT kategori FROM books",
+        conn
+    )
+
+    list_kategori = ["Semua"] + kategori_db["kategori"].tolist()
+
     kategori = st.selectbox(
-        "Filter Kategori",
-        [
-            "Semua",
-            "Fantasi",
-            "Komik",
-            "Romance",
-            "Fiksi",
-            "Self Improvement",
-            "Misteri",
-            "Pendidikan"
-        ]
+        "📚 Filter Kategori",
+        list_kategori
     )
 
     if kategori != "Semua":
@@ -290,7 +304,6 @@ elif menu == "🔍 Cari Buku":
 
         query = f"""
         SELECT * FROM books
-
         WHERE judul LIKE '%{keyword}%'
         """
 
@@ -311,8 +324,6 @@ elif menu == "🔍 Cari Buku":
                 <p>✍️ {buku['penulis']}</p>
 
                 <p>📚 {buku['kategori']}</p>
-
-                <p>📅 {buku['tahun']}</p>
 
                 </div>
                 """, unsafe_allow_html=True)
@@ -404,25 +415,28 @@ elif menu == "📖 Pinjam Buku":
                     f"{batas.strftime('%d-%m-%Y')}"
                 )
 
+        else:
+            st.error("❌ Buku tidak ditemukan")
+
 # =====================================================
-# UPDATE PEMINJAMAN
+# PERPANJANG PEMINJAMAN
 # =====================================================
 
-elif menu == "✏️ Update Peminjaman":
+elif menu == "✏️ Perpanjang Peminjaman":
 
-    st.title("✏️ Update Peminjaman")
+    st.title("✏️ Perpanjang Peminjaman")
 
     kode = st.text_input(
         "Masukkan kode buku"
     )
 
     tambah_hari = st.number_input(
-        "Tambah lama peminjaman (hari)",
+        "Tambah hari",
         1,
         14
     )
 
-    if st.button("Update"):
+    if st.button("Perpanjang"):
 
         cursor.execute("""
         SELECT * FROM peminjaman
@@ -463,13 +477,12 @@ elif menu == "✏️ Update Peminjaman":
             st.success("✅ Peminjaman berhasil diperpanjang")
 
             st.info(
-                f"Batas baru: "
+                f"📅 Batas baru: "
                 f"{batas_baru.strftime('%d-%m-%Y')}"
             )
 
         else:
-
-            st.error("❌ Data peminjaman tidak ditemukan")
+            st.error("❌ Data tidak ditemukan")
 
 # =====================================================
 # KEMBALIKAN BUKU
@@ -510,7 +523,6 @@ elif menu == "📥 Kembalikan Buku":
             denda = 0
 
             if telat > 0:
-
                 denda = telat * 5000
 
             cursor.execute("""
@@ -546,11 +558,7 @@ elif menu == "📥 Kembalikan Buku":
             if denda > 0:
 
                 st.error(
-                    f"⚠️ Terlambat {telat} hari"
-                )
-
-                st.error(
-                    f"💸 Denda: Rp {denda}"
+                    f"⚠️ Denda: Rp {denda}"
                 )
 
             else:
@@ -558,8 +566,7 @@ elif menu == "📥 Kembalikan Buku":
                 st.success("🎉 Tidak ada denda")
 
         else:
-
-            st.error("❌ Data peminjaman tidak ditemukan")
+            st.error("❌ Data tidak ditemukan")
 
 # =====================================================
 # RIWAYAT PEMINJAMAN
@@ -578,6 +585,31 @@ elif menu == "📋 Riwayat Peminjaman":
         data,
         use_container_width=True
     )
+
+# =====================================================
+# HAPUS RIWAYAT
+# =====================================================
+
+elif menu == "🗑️ Hapus Riwayat":
+
+    st.title("🗑️ Hapus Riwayat")
+
+    id_hapus = st.number_input(
+        "Masukkan ID Riwayat",
+        1,
+        100000
+    )
+
+    if st.button("Hapus"):
+
+        cursor.execute(
+            "DELETE FROM peminjaman WHERE id=?",
+            (id_hapus,)
+        )
+
+        conn.commit()
+
+        st.success("✅ Riwayat berhasil dihapus")
 
 # =====================================================
 # FOOTER
