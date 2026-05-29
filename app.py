@@ -101,8 +101,9 @@ CREATE TABLE IF NOT EXISTS peminjaman (
 
 conn.commit()
 
+```python
 # =========================================================
-# DATA AWAL
+# DATA AWAL BUKU (GANTI YANG LAMA DENGAN INI)
 # =========================================================
 
 def insert_default_books():
@@ -127,31 +128,191 @@ def insert_default_books():
 
             (
                 "BK002",
-                "Mariposa",
-                "Luluk HF",
-                "Romance",
-                2018,
+                "The Psychology of Money",
+                "Morgan Housel",
+                "Nonfiksi",
+                2020,
                 4.8,
                 "Tersedia"
             ),
 
             (
                 "BK003",
-                "The Psychology of Money",
-                "Morgan Housel",
-                "Nonfiksi",
-                2020,
-                4.9,
+                "Filosofi Teras",
+                "Henry Manampiring",
+                "Self Improvement",
+                2019,
+                4.8,
                 "Tersedia"
             ),
 
             (
                 "BK004",
-                "Eccedentesiast",
-                "itakrn",
+                "Mariposa",
+                "Luluk HF",
+                "Romance",
+                2018,
+                4.7,
+                "Tersedia"
+            ),
+
+            (
+                "BK005",
+                "Laut Bercerita",
+                "Leila S. Chudori",
                 "Fiksi",
-                2022,
+                2017,
                 4.9,
+                "Tersedia"
+            ),
+
+            (
+                "BK006",
+                "Bumi",
+                "Tere Liye",
+                "Fantasi",
+                2014,
+                4.8,
+                "Tersedia"
+            ),
+
+            (
+                "BK007",
+                "Negeri 5 Menara",
+                "Ahmad Fuadi",
+                "Pendidikan",
+                2009,
+                4.7,
+                "Tersedia"
+            ),
+
+            (
+                "BK008",
+                "Harry Potter",
+                "J.K Rowling",
+                "Fantasi",
+                2001,
+                4.9,
+                "Tersedia"
+            ),
+
+            (
+                "BK009",
+                "Rich Dad Poor Dad",
+                "Robert Kiyosaki",
+                "Bisnis",
+                1997,
+                4.7,
+                "Tersedia"
+            ),
+
+            (
+                "BK010",
+                "Dilan 1990",
+                "Pidi Baiq",
+                "Romance",
+                2014,
+                4.6,
+                "Tersedia"
+            ),
+
+            (
+                "BK011",
+                "Cantik Itu Luka",
+                "Eka Kurniawan",
+                "Fiksi",
+                2002,
+                4.8,
+                "Tersedia"
+            ),
+
+            (
+                "BK012",
+                "Ayat Ayat Cinta",
+                "Habiburrahman El Shirazy",
+                "Religi",
+                2004,
+                4.7,
+                "Tersedia"
+            ),
+
+            (
+                "BK013",
+                "Laskar Pelangi",
+                "Andrea Hirata",
+                "Pendidikan",
+                2005,
+                4.9,
+                "Tersedia"
+            ),
+
+            (
+                "BK014",
+                "Pulang",
+                "Tere Liye",
+                "Fiksi",
+                2015,
+                4.8,
+                "Tersedia"
+            ),
+
+            (
+                "BK015",
+                "Madilog",
+                "Tan Malaka",
+                "Sejarah",
+                1943,
+                4.7,
+                "Tersedia"
+            ),
+
+            (
+                "BK016",
+                "Sherlock Holmes",
+                "Arthur Conan Doyle",
+                "Misteri",
+                1892,
+                4.9,
+                "Tersedia"
+            ),
+
+            (
+                "BK017",
+                "One Piece Vol 1",
+                "Eiichiro Oda",
+                "Komik",
+                1997,
+                4.9,
+                "Tersedia"
+            ),
+
+            (
+                "BK018",
+                "Naruto Vol 1",
+                "Masashi Kishimoto",
+                "Komik",
+                1999,
+                4.8,
+                "Tersedia"
+            ),
+
+            (
+                "BK019",
+                "Ensiklopedia Sains Modern",
+                "National Geographic",
+                "Referensi",
+                2022,
+                4.8,
+                "Tersedia"
+            ),
+
+            (
+                "BK020",
+                "Pemrograman Python",
+                "Budi Raharjo",
+                "Teknologi",
+                2021,
+                4.8,
                 "Tersedia"
             )
 
@@ -164,7 +325,6 @@ def insert_default_books():
 
         conn.commit()
 
-insert_default_books()
 
 # =========================================================
 # SIDEBAR
@@ -697,6 +857,7 @@ elif menu == "🔍 Cari Buku":
 
             st.error("❌ Buku tidak ditemukan")
 
+```python
 # =========================================================
 # STATISTIK
 # =========================================================
@@ -720,7 +881,27 @@ elif menu == "📊 Statistik":
         conn
     )
 
-    col1, col2, col3 = st.columns(3)
+    romance = pd.read_sql_query(
+        "SELECT * FROM books WHERE kategori='Romance'",
+        conn
+    )
+
+    fiksi = pd.read_sql_query(
+        "SELECT * FROM books WHERE kategori='Fiksi'",
+        conn
+    )
+
+    komik = pd.read_sql_query(
+        "SELECT * FROM books WHERE kategori='Komik'",
+        conn
+    )
+
+    teknologi = pd.read_sql_query(
+        "SELECT * FROM books WHERE kategori='Teknologi'",
+        conn
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.metric(
@@ -740,21 +921,34 @@ elif menu == "📊 Statistik":
             len(dipinjam)
         )
 
+    with col4:
+        st.metric(
+            "💕 Romance",
+            len(romance)
+        )
+
     st.markdown("---")
 
-    st.bar_chart(
-        {
+    st.subheader("📖 Detail Koleksi")
 
-            "Jumlah": [
+    st.info(f"""
 
-                len(total),
-                len(tersedia),
-                len(dipinjam)
+    📚 Total Koleksi Buku : {len(total)}
 
-            ]
+    🟢 Buku Tersedia : {len(tersedia)}
 
-        }
-    )
+    📕 Buku Dipinjam : {len(dipinjam)}
+
+    💕 Buku Romance : {len(romance)}
+
+    📘 Buku Fiksi : {len(fiksi)}
+
+    😂 Buku Komik : {len(komik)}
+
+    💻 Buku Teknologi : {len(teknologi)}
+
+    """)
+
 
 # =========================================================
 # FOOTER
