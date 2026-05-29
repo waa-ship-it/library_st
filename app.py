@@ -101,9 +101,9 @@ CREATE TABLE IF NOT EXISTS peminjaman (
 
 conn.commit()
 
-```python
+
 # =========================================================
-# DATA AWAL BUKU (GANTI YANG LAMA DENGAN INI)
+# DATA AWAL BUKU 
 # =========================================================
 
 def insert_default_books():
