@@ -176,14 +176,14 @@ if cursor.fetchone()[0] == 0:
 # =====================================================
 
 st.sidebar.markdown("""
-# 🌸Menu library 
+#🌸 Menu library 
 Temukan semua fitur favoritmu di sini 👇
 """)
 
 st.sidebar.markdown("---")
 
 menu = st.sidebar.radio(
-    "📌 Pilih Menu",
+    "Pilih Menu :",
     [
 
         "🏠 Home",
