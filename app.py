@@ -1,472 +1,769 @@
-# =========================================================
-# IMPORT LIBRARY
-# =========================================================
 import streamlit as st
+import sqlite3
 import pandas as pd
-from datetime import datetime
+
+from datetime import datetime, timedelta
 
 # =========================================================
 # KONFIGURASI HALAMAN
 # =========================================================
+
 st.set_page_config(
-    page_title="Aplikasi Perpustakaan",
+    page_title="Libraverse Pro",
     page_icon="📚",
     layout="wide"
 )
 
 # =========================================================
-# STYLE CSS
+# CSS MODERN
 # =========================================================
+
 st.markdown("""
 <style>
+
 .main {
-    background-color: #f5f7fa;
+    background-color: #F5F7FB;
 }
 
-h1, h2, h3 {
-    color: #1f2937;
-}
-
-.stButton>button {
-    background-color: #2563eb;
+.header-box {
+    background: linear-gradient(to right, #667eea, #764ba2);
+    padding: 35px;
+    border-radius: 25px;
     color: white;
-    border-radius: 10px;
-    height: 45px;
-    width: 100%;
-    font-size: 16px;
+    margin-bottom: 30px;
 }
 
-.stButton>button:hover {
-    background-color: #1d4ed8;
-}
-
-.kotak {
+.book-card {
+    background: white;
     padding: 20px;
-    border-radius: 15px;
-    background-color: white;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
 }
+
+.footer {
+    text-align: center;
+    color: gray;
+    margin-top: 40px;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# CLASS NODE
+# DATABASE
 # =========================================================
-class BookNode:
-    def __init__(self, kode, nama, buku, penulis,
-                 kategori, jumlah, tanggal, waktu):
 
-        self.kode = kode
-        self.nama = nama
-        self.buku = buku
-        self.penulis = penulis
-        self.kategori = kategori
-        self.jumlah = jumlah
-        self.tanggal = tanggal
-        self.waktu = waktu
-        self.next = None
-
-
-# =========================================================
-# CLASS LINKED LIST
-# =========================================================
-class LibraryLinkedList:
-
-    def __init__(self):
-        self.head = None
-
-    # tambah data
-    def tambah_peminjaman(self, kode, nama, buku,
-                          penulis, kategori,
-                          jumlah, tanggal, waktu):
-
-        node_baru = BookNode(
-            kode,
-            nama,
-            buku,
-            penulis,
-            kategori,
-            jumlah,
-            tanggal,
-            waktu
-        )
-
-        if self.head is None:
-            self.head = node_baru
-
-        else:
-            current = self.head
-
-            while current.next:
-                current = current.next
-
-            current.next = node_baru
-
-    # tampilkan data
-    def tampilkan_data(self):
-
-        data = []
-
-        current = self.head
-
-        while current:
-
-            data.append({
-                "Kode": current.kode,
-                "Nama": current.nama,
-                "Judul Buku": current.buku,
-                "Penulis": current.penulis,
-                "Kategori": current.kategori,
-                "Jumlah": current.jumlah,
-                "Tanggal Pinjam": current.tanggal,
-                "Waktu Input": current.waktu
-            })
-
-            current = current.next
-
-        return data
-
-    # hapus data
-    def hapus_data(self, kode):
-
-        current = self.head
-        prev = None
-
-        while current:
-
-            if current.kode == kode:
-
-                if prev:
-                    prev.next = current.next
-
-                else:
-                    self.head = current.next
-
-                return True
-
-            prev = current
-            current = current.next
-
-        return False
-
-
-# =========================================================
-# SESSION STATE
-# =========================================================
-if "library" not in st.session_state:
-    st.session_state.library = LibraryLinkedList()
-
-if "admin_login" not in st.session_state:
-    st.session_state.admin_login = False
-
-# =========================================================
-# LOGIN ADMIN
-# =========================================================
-USERNAME = "parkj"
-PASSWORD = "0052"
-
-st.sidebar.divider()
-st.sidebar.subheader("🔐 Admin Perpustakaan")
-
-admin_user = st.sidebar.text_input("Username Admin")
-admin_pass = st.sidebar.text_input(
-    "Password Admin",
-    type="password"
+conn = sqlite3.connect(
+    "library.db",
+    check_same_thread=False
 )
 
-if st.sidebar.button("Login Admin"):
-
-    if admin_user == USERNAME and admin_pass == PASSWORD:
-
-        st.session_state.admin_login = True
-        st.sidebar.success("✅ Admin berhasil login")
-
-    else:
-
-        st.sidebar.error("❌ Username / Password salah")
+cursor = conn.cursor()
 
 # =========================================================
-# DATA BUKU
+# TABEL BUKU
 # =========================================================
-buku_data = {
 
-    "Laskar Pelangi": {
-        "penulis": "Andrea Hirata",
-        "kategori": "Novel",
-        "stok": 20
-    },
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS books (
 
-    "Bumi Manusia": {
-        "penulis": "Pramoedya Ananta Toer",
-        "kategori": "Sejarah",
-        "stok": 15
-    },
+    kode TEXT PRIMARY KEY,
+    judul TEXT,
+    penulis TEXT,
+    kategori TEXT,
+    tahun INTEGER,
+    rating REAL,
+    status TEXT
 
-    "Atomic Habits": {
-        "penulis": "James Clear",
-        "kategori": "Self Improvement",
-        "stok": 25
-    }
-
-}
-
-# =========================================================
-# HEADER
-# =========================================================
-st.title("📚 Aplikasi Perpustakaan")
-st.write("### Project Struktur Data Menggunakan Linked List")
-st.write("Aplikasi ini digunakan untuk peminjaman buku perpustakaan secara online.")
-
-st.divider()
-
-# =========================================================
-# SIDEBAR PEMINJAMAN
-# =========================================================
-st.sidebar.header("📝 Form Peminjaman Buku")
-
-nama = st.sidebar.text_input("👤 Nama Peminjam")
-
-buku = st.sidebar.selectbox(
-    "📖 Pilih Buku",
-    list(buku_data.keys())
 )
-
-jumlah = st.sidebar.number_input(
-    "🔢 Jumlah Buku",
-    min_value=1,
-    max_value=5,
-    value=1
-)
-
-tanggal = st.sidebar.date_input("📅 Tanggal Peminjaman")
-
-submit = st.sidebar.button("📚 Pinjam Buku")
-
-st.sidebar.divider()
-
-st.sidebar.success("""
-✅ Fitur Aplikasi:
-- Peminjaman buku
-- Linked List
-- Statistik peminjam
-- Riwayat peminjaman
-- Login admin
-- Search data
-- Hapus data
 """)
 
 # =========================================================
-# TAMPILAN BUKU
+# TABEL PEMINJAMAN
 # =========================================================
-st.header("📚 Daftar Buku")
 
-col1, col2, col3 = st.columns(3)
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS peminjaman (
 
-with col1:
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nama TEXT,
+    kode_buku TEXT,
+    judul TEXT,
+    tanggal_pinjam TEXT,
+    batas_kembali TEXT,
+    tanggal_kembali TEXT,
+    status TEXT,
+    denda INTEGER
 
-    st.markdown('<div class="kotak">', unsafe_allow_html=True)
+)
+""")
 
-    st.subheader("Laskar Pelangi")
-
-    st.write("✍️ Penulis : Andrea Hirata")
-    st.write("📂 Kategori : Novel")
-    st.write("📚 Stok : 20 Buku")
-
-    st.success("Buku tersedia")
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with col2:
-
-    st.markdown('<div class="kotak">', unsafe_allow_html=True)
-
-    st.subheader("Bumi Manusia")
-
-    st.write("✍️ Penulis : Pramoedya Ananta Toer")
-    st.write("📂 Kategori : Sejarah")
-    st.write("📚 Stok : 15 Buku")
-
-    st.success("Buku tersedia")
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with col3:
-
-    st.markdown('<div class="kotak">', unsafe_allow_html=True)
-
-    st.subheader("Atomic Habits")
-
-    st.write("✍️ Penulis : James Clear")
-    st.write("📂 Kategori : Self Improvement")
-    st.write("📚 Stok : 25 Buku")
-
-    st.success("Buku tersedia")
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.divider()
+conn.commit()
 
 # =========================================================
-# PROSES PEMINJAMAN
+# DATA AWAL
 # =========================================================
-if submit:
 
-    if nama == "":
+def insert_default_books():
 
-        st.error("❌ Nama peminjam wajib diisi!")
+    cursor.execute("SELECT COUNT(*) FROM books")
 
-    else:
+    total = cursor.fetchone()[0]
 
-        kode = f"PMJ-{len(st.session_state.library.tampilkan_data()) + 1}"
+    if total == 0:
 
-        waktu = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        books = [
 
-        st.session_state.library.tambah_peminjaman(
-            kode,
-            nama,
-            buku,
-            buku_data[buku]["penulis"],
-            buku_data[buku]["kategori"],
-            jumlah,
-            tanggal,
-            waktu
+            (
+                "BK001",
+                "Atomic Habits",
+                "James Clear",
+                "Self Improvement",
+                2018,
+                4.9,
+                "Tersedia"
+            ),
+
+            (
+                "BK002",
+                "Mariposa",
+                "Luluk HF",
+                "Romance",
+                2018,
+                4.8,
+                "Tersedia"
+            ),
+
+            (
+                "BK003",
+                "The Psychology of Money",
+                "Morgan Housel",
+                "Nonfiksi",
+                2020,
+                4.9,
+                "Tersedia"
+            ),
+
+            (
+                "BK004",
+                "Eccedentesiast",
+                "itakrn",
+                "Fiksi",
+                2022,
+                4.9,
+                "Tersedia"
+            )
+
+        ]
+
+        cursor.executemany(
+            "INSERT INTO books VALUES (?, ?, ?, ?, ?, ?, ?)",
+            books
         )
 
-        st.success("✅ Buku berhasil dipinjam!")
+        conn.commit()
 
-        st.balloons()
-
-        st.subheader("🧾 Detail Peminjaman")
-
-        kiri, kanan = st.columns(2)
-
-        with kiri:
-
-            st.write(f"🆔 Kode Peminjaman : {kode}")
-            st.write(f"👤 Nama : {nama}")
-            st.write(f"📖 Buku : {buku}")
-            st.write(f"✍️ Penulis : {buku_data[buku]['penulis']}")
-
-        with kanan:
-
-            st.write(f"📂 Kategori : {buku_data[buku]['kategori']}")
-            st.write(f"🔢 Jumlah Buku : {jumlah}")
-            st.write(f"📅 Tanggal Pinjam : {tanggal}")
-            st.write(f"⏰ Waktu Input : {waktu}")
-
-st.divider()
+insert_default_books()
 
 # =========================================================
-# KHUSUS ADMIN
+# SIDEBAR
 # =========================================================
-if st.session_state.admin_login:
 
-    st.header("📊 Data Peminjaman Buku")
+st.sidebar.title("📚 Libraverse Pro")
 
-    data = st.session_state.library.tampilkan_data()
+menu = st.sidebar.selectbox(
+    "Pilih Menu",
+    [
 
-    if data:
+        "🏠 Home",
+        "📚 Koleksi Buku",
+        "➕ Tambah Buku",
+        "✏️ Update Buku",
+        "🗑️ Hapus Buku",
+        "📖 Pinjam Buku",
+        "📥 Kembalikan Buku",
+        "📋 Data Peminjaman",
+        "🔍 Cari Buku",
+        "📊 Statistik"
 
-        # =================================================
-        # SEARCH DATA
-        # =================================================
-        cari = st.text_input("🔍 Cari Nama Peminjam")
+    ]
+)
 
-        if cari:
+# =========================================================
+# HOME
+# =========================================================
 
-            hasil = []
+if menu == "🏠 Home":
 
-            for item in data:
+    st.markdown("""
+    <div class="header-box">
 
-                if cari.lower() in item["Nama"].lower():
-                    hasil.append(item)
+    <h1>📚 Libraverse Pro</h1>
 
-            df = pd.DataFrame(hasil)
+    <p>
+    Sistem Manajemen Perpustakaan Modern
+    </p>
 
-        else:
+    </div>
+    """, unsafe_allow_html=True)
 
-            df = pd.DataFrame(data)
+    total_buku = pd.read_sql_query(
+        "SELECT * FROM books",
+        conn
+    )
 
-        st.dataframe(
-            df,
-            use_container_width=True
+    total_pinjam = pd.read_sql_query(
+        "SELECT * FROM peminjaman WHERE status='Dipinjam'",
+        conn
+    )
+
+    tersedia = pd.read_sql_query(
+        "SELECT * FROM books WHERE status='Tersedia'",
+        conn
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "📚 Total Buku",
+            len(total_buku)
         )
 
-        # =================================================
-        # STATISTIK
-        # =================================================
-        total_peminjam = len(data)
+    with col2:
+        st.metric(
+            "📖 Sedang Dipinjam",
+            len(total_pinjam)
+        )
 
-        total_buku = 0
+    with col3:
+        st.metric(
+            "🟢 Buku Tersedia",
+            len(tersedia)
+        )
 
-        current = st.session_state.library.head
+    st.markdown("---")
 
-        while current:
+    st.subheader("🔥 Buku Populer")
 
-            total_buku += current.jumlah
+    st.markdown("""
+    <div class="book-card">
 
-            current = current.next
+    <h3>📖 Atomic Habits</h3>
 
-        st.divider()
+    <p>✍️ James Clear</p>
 
-        col1, col2, col3 = st.columns(3)
+    <p>⭐ 4.9</p>
 
-        with col1:
+    </div>
+    """, unsafe_allow_html=True)
 
-            st.metric(
-                "👥 Total Peminjam",
-                total_peminjam
-            )
+# =========================================================
+# KOLEKSI BUKU
+# =========================================================
 
-        with col2:
+elif menu == "📚 Koleksi Buku":
 
-            st.metric(
-                "📚 Total Buku Dipinjam",
-                total_buku
-            )
+    st.title("📚 Koleksi Buku")
 
-        with col3:
+    data = pd.read_sql_query(
+        "SELECT * FROM books",
+        conn
+    )
 
-            rata = total_buku / total_peminjam
+    kategori = st.selectbox(
+        "Filter Kategori",
+        [
+            "Semua",
+            "Romance",
+            "Fiksi",
+            "Nonfiksi",
+            "Self Improvement"
+        ]
+    )
 
-            st.metric(
-                "📈 Rata-rata Pinjaman",
-                f"{int(rata)} Buku"
-            )
+    if kategori != "Semua":
 
-        # =================================================
-        # HAPUS DATA
-        # =================================================
-        st.divider()
+        data = data[
+            data["kategori"] == kategori
+        ]
 
-        st.subheader("🗑️ Hapus Data Peminjaman")
+    for _, buku in data.iterrows():
 
-        kode_hapus = st.text_input("Masukkan Kode Peminjaman")
+        warna = "🟢" if buku["status"] == "Tersedia" else "🔴"
 
-        if st.button("Hapus Data"):
+        st.markdown(f"""
+        <div class="book-card">
 
-            hasil = st.session_state.library.hapus_data(kode_hapus)
+        <h3>📖 {buku['judul']}</h3>
 
-            if hasil:
+        <p>✍️ {buku['penulis']}</p>
 
-                st.success("✅ Data berhasil dihapus!")
-                st.rerun()
+        <p>📚 {buku['kategori']}</p>
+
+        <p>📅 {buku['tahun']}</p>
+
+        <p>⭐ {buku['rating']}</p>
+
+        <p>{warna} {buku['status']}</p>
+
+        <p>🆔 {buku['kode']}</p>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+# =========================================================
+# TAMBAH BUKU
+# =========================================================
+
+elif menu == "➕ Tambah Buku":
+
+    st.title("➕ Tambah Buku")
+
+    kode = st.text_input("Kode Buku")
+
+    judul = st.text_input("Judul Buku")
+
+    penulis = st.text_input("Penulis")
+
+    kategori = st.selectbox(
+        "Kategori",
+        [
+            "Romance",
+            "Fiksi",
+            "Nonfiksi",
+            "Self Improvement"
+        ]
+    )
+
+    tahun = st.number_input(
+        "Tahun",
+        2000,
+        2030
+    )
+
+    rating = st.slider(
+        "Rating",
+        1.0,
+        5.0,
+        4.0
+    )
+
+    if st.button("Tambah Buku"):
+
+        try:
+
+            cursor.execute("""
+            INSERT INTO books
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+
+                kode,
+                judul,
+                penulis,
+                kategori,
+                tahun,
+                rating,
+                "Tersedia"
+
+            ))
+
+            conn.commit()
+
+            st.success("✅ Buku berhasil ditambahkan")
+
+            st.balloons()
+
+        except:
+            st.error("❌ Kode buku sudah ada")
+
+# =========================================================
+# UPDATE BUKU
+# =========================================================
+
+elif menu == "✏️ Update Buku":
+
+    st.title("✏️ Update Buku")
+
+    kode = st.text_input("Masukkan kode buku")
+
+    judul = st.text_input("Judul baru")
+
+    penulis = st.text_input("Penulis baru")
+
+    kategori = st.selectbox(
+        "Kategori baru",
+        [
+            "Romance",
+            "Fiksi",
+            "Nonfiksi",
+            "Self Improvement"
+        ]
+    )
+
+    tahun = st.number_input(
+        "Tahun baru",
+        2000,
+        2030
+    )
+
+    rating = st.slider(
+        "Rating baru",
+        1.0,
+        5.0,
+        4.0
+    )
+
+    if st.button("Update"):
+
+        cursor.execute("""
+        UPDATE books
+        SET
+
+            judul=?,
+            penulis=?,
+            kategori=?,
+            tahun=?,
+            rating=?
+
+        WHERE kode=?
+        """, (
+
+            judul,
+            penulis,
+            kategori,
+            tahun,
+            rating,
+            kode
+
+        ))
+
+        conn.commit()
+
+        st.success("✅ Buku berhasil diupdate")
+
+# =========================================================
+# HAPUS BUKU
+# =========================================================
+
+elif menu == "🗑️ Hapus Buku":
+
+    st.title("🗑️ Hapus Buku")
+
+    kode = st.text_input("Kode Buku")
+
+    if st.button("Hapus"):
+
+        cursor.execute(
+            "DELETE FROM books WHERE kode=?",
+            (kode,)
+        )
+
+        conn.commit()
+
+        st.success("✅ Buku berhasil dihapus")
+
+# =========================================================
+# PINJAM BUKU
+# =========================================================
+
+elif menu == "📖 Pinjam Buku":
+
+    st.title("📖 Pinjam Buku")
+
+    nama = st.text_input("Nama Peminjam")
+
+    kode = st.text_input("Kode Buku")
+
+    lama = st.number_input(
+        "Lama Pinjam (hari)",
+        1,
+        30
+    )
+
+    if st.button("Pinjam Buku"):
+
+        cursor.execute(
+            "SELECT * FROM books WHERE kode=?",
+            (kode,)
+        )
+
+        buku = cursor.fetchone()
+
+        if buku:
+
+            if buku[6] == "Dipinjam":
+
+                st.error("❌ Buku sedang dipinjam")
 
             else:
 
-                st.error("❌ Kode peminjaman tidak ditemukan!")
+                tanggal_pinjam = datetime.now()
 
-    else:
+                batas_kembali = (
+                    tanggal_pinjam
+                    + timedelta(days=lama)
+                )
 
-        st.warning("⚠️ Belum ada data peminjaman buku.")
+                cursor.execute("""
+                INSERT INTO peminjaman (
 
-else:
+                    nama,
+                    kode_buku,
+                    judul,
+                    tanggal_pinjam,
+                    batas_kembali,
+                    tanggal_kembali,
+                    status,
+                    denda
 
-    st.info("👤 User hanya dapat melakukan peminjaman buku.")
+                )
+
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+
+                    nama,
+                    kode,
+                    buku[1],
+                    tanggal_pinjam.strftime("%Y-%m-%d"),
+                    batas_kembali.strftime("%Y-%m-%d"),
+                    "-",
+                    "Dipinjam",
+                    0
+
+                ))
+
+                cursor.execute("""
+                UPDATE books
+                SET status='Dipinjam'
+                WHERE kode=?
+                """, (kode,))
+
+                conn.commit()
+
+                st.success("✅ Buku berhasil dipinjam")
+
+                st.info(
+                    f"Batas pengembalian: "
+                    f"{batas_kembali.strftime('%d-%m-%Y')}"
+                )
+
+# =========================================================
+# KEMBALIKAN BUKU
+# =========================================================
+
+elif menu == "📥 Kembalikan Buku":
+
+    st.title("📥 Kembalikan Buku")
+
+    kode = st.text_input("Kode Buku")
+
+    if st.button("Kembalikan Buku"):
+
+        cursor.execute("""
+        SELECT * FROM peminjaman
+
+        WHERE kode_buku=?
+        AND status='Dipinjam'
+        """, (kode,))
+
+        data = cursor.fetchone()
+
+        if data:
+
+            batas = datetime.strptime(
+                data[5],
+                "%Y-%m-%d"
+            )
+
+            hari_ini = datetime.now()
+
+            telat = (hari_ini - batas).days
+
+            denda = 0
+
+            if telat > 0:
+
+                denda = telat * 5000
+
+            cursor.execute("""
+            UPDATE peminjaman
+
+            SET
+
+                tanggal_kembali=?,
+                status='Dikembalikan',
+                denda=?
+
+            WHERE id=?
+            """, (
+
+                hari_ini.strftime("%Y-%m-%d"),
+                denda,
+                data[0]
+
+            ))
+
+            cursor.execute("""
+            UPDATE books
+
+            SET status='Tersedia'
+
+            WHERE kode=?
+            """, (kode,))
+
+            conn.commit()
+
+            st.success("✅ Buku berhasil dikembalikan")
+
+            if denda > 0:
+
+                st.error(
+                    f"⚠️ Terlambat {telat} hari\n"
+                    f"Denda: Rp {denda}"
+                )
+
+            else:
+
+                st.success("🎉 Tidak ada denda")
+
+        else:
+
+            st.error("❌ Data peminjaman tidak ditemukan")
+
+# =========================================================
+# DATA PEMINJAMAN
+# =========================================================
+
+elif menu == "📋 Data Peminjaman":
+
+    st.title("📋 Data Peminjaman")
+
+    data = pd.read_sql_query(
+        "SELECT * FROM peminjaman",
+        conn
+    )
+
+    st.dataframe(
+        data,
+        use_container_width=True
+    )
+
+# =========================================================
+# CARI BUKU
+# =========================================================
+
+elif menu == "🔍 Cari Buku":
+
+    st.title("🔍 Cari Buku")
+
+    keyword = st.text_input(
+        "Masukkan judul buku"
+    )
+
+    if keyword:
+
+        query = f"""
+        SELECT * FROM books
+
+        WHERE judul LIKE '%{keyword}%'
+        """
+
+        data = pd.read_sql_query(
+            query,
+            conn
+        )
+
+        if len(data) > 0:
+
+            for _, buku in data.iterrows():
+
+                st.markdown(f"""
+                <div class="book-card">
+
+                <h3>📖 {buku['judul']}</h3>
+
+                <p>✍️ {buku['penulis']}</p>
+
+                <p>📚 {buku['kategori']}</p>
+
+                <p>⭐ {buku['rating']}</p>
+
+                </div>
+                """, unsafe_allow_html=True)
+
+        else:
+
+            st.error("❌ Buku tidak ditemukan")
+
+# =========================================================
+# STATISTIK
+# =========================================================
+
+elif menu == "📊 Statistik":
+
+    st.title("📊 Statistik Perpustakaan")
+
+    total = pd.read_sql_query(
+        "SELECT * FROM books",
+        conn
+    )
+
+    tersedia = pd.read_sql_query(
+        "SELECT * FROM books WHERE status='Tersedia'",
+        conn
+    )
+
+    dipinjam = pd.read_sql_query(
+        "SELECT * FROM books WHERE status='Dipinjam'",
+        conn
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "📚 Total Buku",
+            len(total)
+        )
+
+    with col2:
+        st.metric(
+            "🟢 Tersedia",
+            len(tersedia)
+        )
+
+    with col3:
+        st.metric(
+            "📕 Dipinjam",
+            len(dipinjam)
+        )
+
+    st.markdown("---")
+
+    st.bar_chart(
+        {
+
+            "Jumlah": [
+
+                len(total),
+                len(tersedia),
+                len(dipinjam)
+
+            ]
+
+        }
+    )
 
 # =========================================================
 # FOOTER
 # =========================================================
-st.divider()
 
-st.caption("© 2026 | Project UAS Struktur Data - Perpustakaan")
+st.markdown("""
+<div class="footer">
+
+📚 Libraverse Pro — Modern Library System
+
+</div>
+""", unsafe_allow_html=True)
