@@ -282,9 +282,6 @@ elif menu == "📚 Koleksi Buku":
         conn
     )
 
-    st.write("jumlah buku :", len(data))
-    st.dataframe(data)
-    
     kategori_db = pd.read_sql_query(
         "SELECT DISTINCT kategori FROM books",
         conn
@@ -303,7 +300,6 @@ elif menu == "📚 Koleksi Buku":
             data["kategori"] == kategori
         ]
 
-    st.write("jumlah data setelah filter :", len(data))
     for _, buku in data.iterrows():
 
         warna = "🟢" if buku["status"] == "Tersedia" else "🔴"
