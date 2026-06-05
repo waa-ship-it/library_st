@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # =====================================================
-# CSS ESTETIK
+# CSS 
 # =====================================================
 
 st.markdown("""
@@ -212,18 +212,6 @@ st.sidebar.info("""
 
 if menu == "🏠 Home":
 
-    st.markdown("""
-    <div class="header-box">
-
-    <h1>📚 Libraverse</h1>
-
-    <p>
-    Selamat datang di perpustakaan digital modern ✨
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
-
     total_buku = pd.read_sql_query(
         "SELECT * FROM books",
         conn
@@ -238,6 +226,27 @@ if menu == "🏠 Home":
         "SELECT * FROM books WHERE status='Dipinjam'",
         conn
     )
+
+    # HERO SECTION
+
+    st.markdown("""
+    <div style="
+        background: linear-gradient(135deg,#667eea,#764ba2);
+        padding:40px;
+        border-radius:25px;
+        color:white;
+        text-align:center;
+        margin-bottom:25px;
+    ">
+        <h1>📚 Libraverse</h1>
+        <h4>Modern Digital Library System ✨</h4>
+        <p>
+        Jelajahi dunia melalui buku dan temukan inspirasi tanpa batas.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # STATISTIK
 
     col1, col2, col3 = st.columns(3)
 
@@ -259,15 +268,76 @@ if menu == "🏠 Home":
             len(dipinjam)
         )
 
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # FITUR
+
+    st.subheader("✨ Fitur Libraverse")
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.info("""
+📚 **Koleksi Buku**
+
+Lihat berbagai koleksi buku berdasarkan kategori.
+""")
+
+    with c2:
+        st.info("""
+📖 **Peminjaman Buku**
+
+Pinjam buku dengan mudah dan cepat.
+""")
+
+    with c3:
+        st.info("""
+📋 **Riwayat Peminjaman**
+
+Pantau seluruh aktivitas peminjaman buku.
+""")
+
     st.markdown("---")
 
-    st.subheader("✨ Tentang Libraverse")
+    # QUOTES
 
-    st.write("""
-    Libraverse adalah aplikasi perpustakaan digital sederhana
-    yang membantu pengguna mencari, meminjam,
-    dan mengelola buku dengan mudah 📖
-    """)
+    st.markdown("""
+    <div style="
+        background:white;
+        padding:25px;
+        border-radius:20px;
+        text-align:center;
+        box-shadow:0px 4px 10px rgba(0,0,0,0.08);
+    ">
+        <h3>📖 Quote of The Day</h3>
+        <p><i>
+        "A reader lives a thousand lives before he dies.
+        The man who never reads lives only one."
+        </i></p>
+        <p>— George R. R. Martin</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # KATEGORI
+
+    kategori = pd.read_sql_query(
+        """
+        SELECT kategori,
+        COUNT(*) as jumlah
+        FROM books
+        GROUP BY kategori
+        """,
+        conn
+    )
+
+    st.subheader("📚 Koleksi Berdasarkan Kategori")
+
+    st.dataframe(
+        kategori,
+        use_container_width=True
+    )
 
 # =====================================================
 # KOLEKSI BUKU
