@@ -282,6 +282,9 @@ elif menu == "📚 Koleksi Buku":
         conn
     )
 
+    st.write("jumlah buku :", len(data))
+    st.dataframe(data)
+    
     kategori_db = pd.read_sql_query(
         "SELECT DISTINCT kategori FROM books",
         conn
