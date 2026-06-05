@@ -246,8 +246,9 @@ if menu == "🏠 Home":
     ">
     
     <h1 style="
-    color:white;
+    color:"FFFFFF;
     font-size:48px;
+    font-weight:700;
     margin-bottom:10px;
     ">
     📚 Libraverse
@@ -260,7 +261,8 @@ if menu == "🏠 Home":
     </h4>
     
     <p style="
-    color:white;
+    font-size:18px;
+    color:#FDFDFD;
     ">
     Jelajahi dunia melalui buku dan temukan inspirasi tanpa batas 🧸
     </p>
