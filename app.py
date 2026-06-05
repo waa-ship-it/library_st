@@ -176,9 +176,9 @@ if cursor.fetchone()[0] == 0:
 st.sidebar.markdown("""
 
 <h1 style="
-color:"##9B7EBD;
+color:"#9B7EBD;
 "> 
-🌸 Menu library 
+📚 Menu library 
 </h1>
 
 <p style="
@@ -200,10 +200,10 @@ menu = st.sidebar.radio(
         "📚 Koleksi Buku",
         "🔍 Cari Buku",
         "📖 Pinjam Buku",
-        "✏️ Perpanjang Peminjaman",
+        "🔄 Perpanjang Peminjaman",
         "📥 Kembalikan Buku",
         "📋 Riwayat Peminjaman",
-        "🗑️ Hapus Riwayat"
+        "🧹 Hapus Riwayat"
 
     ]
 )
@@ -262,7 +262,7 @@ if menu == "🏠 Home":
     <p style="
     color:white;
     ">
-    Jelajahi dunia melalui buku dan temukan inspirasi tanpa batas 🧸
+    Temukan, pinjam, dan lihat koleksi buku dengan mudah dalam satu platform.
     </p>
     
     </div>
@@ -295,7 +295,7 @@ if menu == "🏠 Home":
 
     # FITUR
 
-    st.subheader("🖇️ Fitur Libraverse")
+    st.subheader("⚙️ Fitur Libraverse")
 
     c1, c2, c3 = st.columns(3)
 
@@ -548,9 +548,9 @@ elif menu == "📖 Pinjam Buku":
 # PERPANJANG PEMINJAMAN
 # =====================================================
 
-elif menu == "✏️ Perpanjang Peminjaman":
+elif menu == "🔄 Perpanjang Peminjaman":
 
-    st.title("✏️ Perpanjang Peminjaman")
+    st.title("🔄 Perpanjang Peminjaman")
 
     kode = st.text_input(
         "Masukkan kode buku"
@@ -751,9 +751,9 @@ elif menu == "📋 Riwayat Peminjaman":
 # HAPUS RIWAYAT
 # =====================================================
 
-elif menu == "🗑️ Hapus Riwayat":
+elif menu == "🧹 Hapus Riwayat":
 
-    st.title("🗑️ Hapus Riwayat")
+    st.title("🧹 Hapus Riwayat")
 
     id_hapus = st.number_input(
         "Masukkan ID Riwayat",
