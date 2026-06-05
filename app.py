@@ -538,7 +538,6 @@ elif menu == "📥 Kembalikan Buku":
 
         cursor.execute("""
         SELECT * FROM peminjaman
-
         WHERE kode_buku=?
         AND status='Dipinjam'
         """, (kode,))
@@ -547,35 +546,39 @@ elif menu == "📥 Kembalikan Buku":
 
         if data:
 
-            batas = datetime.strptime(
+            tanggal_pinjam = datetime.strptime(
+                data[4],
+                "%Y-%m-%d"
+            )
+
+            batas_kembali = datetime.strptime(
                 data[5],
                 "%Y-%m-%d"
             )
 
-            hari_ini = datetime.now()
+            tanggal_kembali = datetime.now()
 
             telat = (
-                hari_ini - batas
+                tanggal_kembali - batas_kembali
             ).days
 
-            denda = 0
+            if telat < 0:
+                telat = 0
 
-            if telat > 0:
-                denda = telat * 5000
+            # Denda Rp5.000 per hari
+            denda_per_hari = 5000
+            denda = telat * denda_per_hari
 
             cursor.execute("""
             UPDATE peminjaman
-
             SET
-
                 tanggal_kembali=?,
                 status='Dikembalikan',
                 denda=?
-
             WHERE id=?
             """, (
 
-                hari_ini.strftime("%Y-%m-%d"),
+                tanggal_kembali.strftime("%Y-%m-%d"),
                 denda,
                 data[0]
 
@@ -583,9 +586,7 @@ elif menu == "📥 Kembalikan Buku":
 
             cursor.execute("""
             UPDATE books
-
             SET status='Tersedia'
-
             WHERE kode=?
             """, (kode,))
 
@@ -593,18 +594,42 @@ elif menu == "📥 Kembalikan Buku":
 
             st.success("✅ Buku berhasil dikembalikan")
 
-            if denda > 0:
+            st.markdown("### 📋 Detail Pengembalian")
 
+            st.info(f"""
+📚 Kode Buku : {data[2]}
+
+📅 Tanggal Pinjam : {data[4]}
+
+⏳ Batas Pengembalian : {data[5]}
+
+📥 Tanggal Kembali : {tanggal_kembali.strftime('%Y-%m-%d')}
+
+⚠️ Hari Keterlambatan : {telat} hari
+""")
+
+            st.markdown("### 💰 Perhitungan Denda")
+
+            st.write(
+                f"Denda = {telat} hari × Rp {denda_per_hari:,}"
+            )
+
+            st.write(
+                f"Total Denda = Rp {denda:,}"
+            )
+
+            if denda > 0:
                 st.error(
-                    f"⚠️ Denda: Rp {denda}"
+                    f"⚠️ Anda terlambat {telat} hari. "
+                    f"Denda yang harus dibayar: Rp {denda:,}"
+                )
+            else:
+                st.success(
+                    "🎉 Buku dikembalikan tepat waktu. Tidak ada denda."
                 )
 
-            else:
-
-                st.success("🎉 Tidak ada denda")
-
         else:
-            st.error("❌ Data tidak ditemukan")
+            st.error("❌ Data peminjaman tidak ditemukan")
 
 # =====================================================
 # RIWAYAT PEMINJAMAN
