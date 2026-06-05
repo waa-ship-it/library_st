@@ -381,6 +381,10 @@ elif menu == "📖 Pinjam Buku":
 
     kode = st.text_input("Kode Buku")
 
+    tanggal_pinjam = st.date_input(
+        "Tanggal Peminjaman"
+    )
+
     lama = st.number_input(
         "Lama Peminjaman (hari)",
         1,
@@ -404,7 +408,10 @@ elif menu == "📖 Pinjam Buku":
 
             else:
 
-                tanggal_pinjam = datetime.now()
+                tanggal_pinjam = datetime.combine(
+                    tanggal_pinjam,
+                    datetime.min.time()
+                )
 
                 batas = tanggal_pinjam + timedelta(days=lama)
 
@@ -534,6 +541,10 @@ elif menu == "📥 Kembalikan Buku":
         "Masukkan kode buku"
     )
 
+    tanggal_kembali_input = st.date_input(
+        "tanggal pengembalian"
+    )
+
     if st.button("Kembalikan Buku"):
 
         cursor.execute("""
@@ -546,18 +557,19 @@ elif menu == "📥 Kembalikan Buku":
 
         if data:
 
-            tanggal_pinjam = datetime.strptime(
-                data[4],
-                "%Y-%m-%d"
-            )
-
+            # 1. ambil batas kembalikan buku
             batas_kembali = datetime.strptime(
                 data[5],
                 "%Y-%m-%d"
             )
 
-            tanggal_kembali = datetime.now()
+            # 2. ambil tanggal kembalikan dari input user
+            tanggal_kembali = datetime.combine(
+                tanggal_kembali_input,
+                datetime.min.time()
+            )
 
+            # 3. hitung keterlambatan 
             telat = (
                 tanggal_kembali - batas_kembali
             ).days
@@ -565,10 +577,11 @@ elif menu == "📥 Kembalikan Buku":
             if telat < 0:
                 telat = 0
 
-            # Denda Rp5.000 per hari
+            # 4. hitung Denda Rp 5.000 per hari
             denda_per_hari = 5000
             denda = telat * denda_per_hari
 
+            # 5. update database
             cursor.execute("""
             UPDATE peminjaman
             SET
@@ -584,6 +597,8 @@ elif menu == "📥 Kembalikan Buku":
 
             ))
 
+            # 6. update status buku
+
             cursor.execute("""
             UPDATE books
             SET status='Tersedia'
@@ -594,21 +609,28 @@ elif menu == "📥 Kembalikan Buku":
 
             st.success("✅ Buku berhasil dikembalikan")
 
+            # ===== tampilkan detail
             st.markdown("### 📋 Detail Pengembalian")
 
             st.info(f"""
 📚 Kode Buku : {data[2]}
 
+📖 Judul Buku : {data[3]}
+
+👤 Nama Peminjam : {data[1]}
+
 📅 Tanggal Pinjam : {data[4]}
 
 ⏳ Batas Pengembalian : {data[5]}
 
-📥 Tanggal Kembali : {tanggal_kembali.strftime('%Y-%m-%d')}
+📥 Tanggal Pengembalian : {tanggal_kembali.strftime('%Y-%m-%d')}
 
 ⚠️ Hari Keterlambatan : {telat} hari
 """)
 
-            st.markdown("### 💰 Perhitungan Denda")
+            st.markdown(
+                "### 💰 Perhitungan Denda"
+            )
 
             st.write(
                 f"Denda = {telat} hari × Rp {denda_per_hari:,}"
@@ -621,11 +643,12 @@ elif menu == "📥 Kembalikan Buku":
             if denda > 0:
                 st.error(
                     f"⚠️ Anda terlambat {telat} hari. "
-                    f"Denda yang harus dibayar: Rp {denda:,}"
+                    f"Denda yang harus dibayar : Rp {denda:,}"
                 )
+                
             else:
                 st.success(
-                    "🎉 Buku dikembalikan tepat waktu. Tidak ada denda."
+                    "🎉 Buku dikembalikan tepat waktu, tidak ada denda."
                 )
 
         else:
