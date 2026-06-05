@@ -33,17 +33,15 @@ st.markdown("""
 }
 
 .book-card {
-    background: white;
+    background: #FFFFFF;
+    border: 2px solid #F0E9FF;
     padding: 20px;
     border-radius: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
 }
 
 .footer {
-    text-align: center;
-    color: gray;
-    margin-top: 40px;
+    color:#888;
+    font-size:14px;
 }
 
 .sidebar .sidebar-content {
@@ -176,9 +174,23 @@ if cursor.fetchone()[0] == 0:
 # =====================================================
 
 st.sidebar.markdown("""
-# 🌸 Menu library 
+<div style="text-align:center;">
+
+<h1 style="
+color:"##9B7EBD;
+"> 
+🌸 Menu library 
+</h1>
+
+<p style="
+color:#777777;
+">
 Temukan semua fitur favoritmu di sini 👇
-""")
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
 
 st.sidebar.markdown("---")
 
@@ -223,15 +235,21 @@ if menu == "🏠 Home":
 
     st.markdown("""
     <div style="
-        background: linear-gradient(135deg,#667eea,#764ba2);
+        background: linear-gradient(135deg,#A7C7E7,#F8C8DC);
         padding:40px;
         border-radius:25px;
         color:white;
         text-align:center;
         margin-bottom:25px;
     ">
-        <h1>📚 Libraverse</h1>
-        <h4>Modern Digital Library System ✨</h4>
+        <h1 style="
+        color:#9B7EBD;
+        font-weight:bold;
+        ">
+        📚 Libraverse
+        </h1>>📚 Libraverse</h1>
+        
+    <h4>Modern Digital Library System ✨</h4>
         <p>
         Jelajahi dunia melalui buku dan temukan inspirasi tanpa batas.
         </p>
@@ -778,7 +796,7 @@ elif menu == "🗑️ Hapus Riwayat":
 st.markdown("""
 <div class="footer">
 
-Libraverse — Digital Library © 2026
+libraverse - Digital Library © 2026
 
 </div>
 """, unsafe_allow_html=True)
