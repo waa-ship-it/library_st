@@ -187,7 +187,6 @@ color:#777777;
 Temukan semua fitur favoritmu di sini 👇
 </p>
 
-</div>
 """, unsafe_allow_html=True)
 
 
@@ -234,27 +233,42 @@ if menu == "🏠 Home":
 
     st.markdown("""
     <div style="
-        background: linear-gradient(135deg,#A7C7E7,#F8C8DC);
-        padding:40px;
-        border-radius:25px;
-        color:white;
-        text-align:center;
-        margin-bottom:25px;
+    background:linear-gradient(
+    135deg,
+    #A7C7E7,
+    #CDB4DB,
+    #F8C8DC
+    );
+    padding:45px;
+    border-radius:25px;
+    text-align:center;
+    margin-bottom:25px;
     ">
-        <h1 style="
-        color:#9B7EBD;
-        font-weight:bold;
-        ">
-        📚 Libraverse
-        </h1>>📚 Libraverse</h1>
-        
-    <h4>Modern Digital Library System ✨</h4>
-        <p>
-        Jelajahi dunia melalui buku dan temukan inspirasi tanpa batas.
-        </p>
+    
+    <h1 style="
+    color:white;
+    font-size:48px;
+    margin-bottom:10px;
+    ">
+    📚 Libraverse
+    </h1>
+    
+    <h4 style="
+    color:white;
+    ">
+    Modern Digital Library System ✨
+    </h4>
+    
+    <p style="
+    color:white;
+    ">
+    Jelajahi dunia melalui buku dan temukan inspirasi tanpa batas
+    </p>
+    
     </div>
     """, unsafe_allow_html=True)
 
+    
     # STATISTIK
 
     col1, col2, col3 = st.columns(3)
