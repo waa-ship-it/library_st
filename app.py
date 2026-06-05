@@ -174,7 +174,6 @@ if cursor.fetchone()[0] == 0:
 # =====================================================
 
 st.sidebar.markdown("""
-<div style="text-align:center;">
 
 <h1 style="
 color:"##9B7EBD;
