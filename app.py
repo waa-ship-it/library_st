@@ -355,7 +355,7 @@ Pantau seluruh aktivitas peminjaman buku.
         conn
     )
 
-    st.subheader("📚 Koleksi Berdasarkan Kategori")
+    st.subheader("📝 Koleksi Berdasarkan Kategori")
 
     st.dataframe(
         kategori,
@@ -383,7 +383,7 @@ elif menu == "📚 Koleksi Buku":
     list_kategori = ["Semua"] + kategori_db["kategori"].tolist()
 
     kategori = st.selectbox(
-        "📚 Filter Kategori",
+        "📚 Pilih Kategori",
         list_kategori
     )
 
@@ -403,15 +403,10 @@ elif menu == "📚 Koleksi Buku":
         <h2>📖 {buku['judul']}</h2>
 
         <p>✍️ Penulis : {buku['penulis']}</p>
-
         <p>📚 Genre : {buku['kategori']}</p>
-
         <p>📅 Tahun : {buku['tahun']}</p>
-
         <p>⭐ Rating : {buku['rating']}</p>
-
         <p>{warna} Status : {buku['status']}</p>
-
         <p>🆔 Kode Buku : {buku['kode']}</p>
 
         </div>
@@ -451,11 +446,9 @@ elif menu == "🔍 Cari Buku":
                 <h2>📖 {buku['judul']}</h2>
 
                 <p>✍️ {buku['penulis']}</p>
-
                 <p>📚 {buku['kategori']}</p>
-
                 <p>⭐ {buku['rating']}</p>
-
+                
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -471,9 +464,7 @@ elif menu == "📖 Pinjam Buku":
     st.title("📖 Pinjam Buku")
 
     nama = st.text_input("Nama Peminjam")
-
     kode = st.text_input("Kode Buku")
-
     tanggal_pinjam = st.date_input(
         "Tanggal Peminjaman"
     )
@@ -494,13 +485,10 @@ elif menu == "📖 Pinjam Buku":
         buku = cursor.fetchone()
 
         if buku:
-
             if buku[6] == "Dipinjam":
-
                 st.error("❌ Buku sedang dipinjam")
 
             else:
-
                 tanggal_pinjam = datetime.combine(
                     tanggal_pinjam,
                     datetime.min.time()
@@ -707,17 +695,11 @@ elif menu == "📥 Kembalikan Buku":
 
             st.info(f"""
 📚 Kode Buku : {data[2]}
-
 📖 Judul Buku : {data[3]}
-
 👤 Nama Peminjam : {data[1]}
-
 📅 Tanggal Pinjam : {data[4]}
-
 ⏳ Batas Pengembalian : {data[5]}
-
 📥 Tanggal Pengembalian : {tanggal_kembali.strftime('%Y-%m-%d')}
-
 ⚠️ Hari Keterlambatan : {telat} hari
 """)
 
@@ -789,7 +771,7 @@ elif menu == "🗑️ Hapus Riwayat":
         data = cursor.fetchone()
 
         if data:
-
+            
             cursor.execute(
                 "DELETE FROM peminjaman WHERE id=?",
                 (id_hapus,)
