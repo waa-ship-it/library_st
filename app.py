@@ -262,7 +262,7 @@ if menu == "🏠 Home":
     <p style="
     color:white;
     ">
-    Jelajahi dunia melalui buku dan temukan inspirasi tanpa batas
+    Jelajahi dunia melalui buku dan temukan inspirasi tanpa batas 🧸
     </p>
     
     </div>
@@ -295,7 +295,7 @@ if menu == "🏠 Home":
 
     # FITUR
 
-    st.subheader("✨ Fitur Libraverse")
+    st.subheader("🖇️ Fitur Libraverse")
 
     c1, c2, c3 = st.columns(3)
 
