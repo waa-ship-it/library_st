@@ -154,15 +154,15 @@ if cursor.fetchone()[0] == 0:
         ("BK023", "Pulang", " Leila S. Chudori", "Fiksi", 2015, 4.8, "Tersedia"),
 
         # MISTERI
-        ("BK021", "Sherlock Holmes", "Arthur Conan Doyle", "Misteri", 1892, 4.9, "Tersedia"),
-        ("BK022", "The Da Vinci Code", "Dan Brown", "Misteri", 2003, 4.7, "Tersedia"),
+        ("BK024", "Sherlock Holmes", "Arthur Conan Doyle", "Misteri", 1892, 4.9, "Tersedia"),
+        ("BK025", "The Da Vinci Code", "Dan Brown", "Misteri", 2003, 4.7, "Tersedia"),
 
         # RELIGI
-        ("BK023", "Ayat Ayat Cinta", "Habiburrahman", "Religi", 2004, 4.7, "Tersedia"),
+        ("BK026", "Ayat Ayat Cinta", "Habiburrahman", "Religi", 2004, 4.7, "Tersedia"),
 
         # TEKNOLOGI
-        ("BK024", "Pemrograman Python", "Budi Raharjo", "Teknologi", 2021, 4.8, "Tersedia"),
-        ("BK025", "Belajar HTML CSS", "Andi Offset", "Teknologi", 2020, 4.7, "Tersedia")
+        ("BK027", "Pemrograman Python", "Budi Raharjo", "Teknologi", 2021, 4.8, "Tersedia"),
+        ("BK028", "Belajar HTML CSS", "Andi Offset", "Teknologi", 2020, 4.7, "Tersedia")
 
     ]
 
