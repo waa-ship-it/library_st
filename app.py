@@ -751,13 +751,25 @@ elif menu == "🗑️ Hapus Riwayat":
     if st.button("Hapus Riwayat"):
 
         cursor.execute(
-            "DELETE FROM peminjaman WHERE id=?",
+            "SELECT * FROM peminjaman WHERE id=?",
             (id_hapus,)
         )
 
-        conn.commit()
+        data = cursor.fetchone()
 
-        st.success("✅ Riwayat berhasil dihapus")
+        if data:
+
+            cursor.execute(
+                "DELETE FROM peminjaman WHERE id=?",
+                (id_hapus,)
+            )
+
+            conn.commit()
+
+            st.success("✅ Riwayat berhasil dihapus")
+
+        else:
+            st.error("❌ ID riwayat tidak ditemukan")
 
 # =====================================================
 # FOOTER
