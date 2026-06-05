@@ -303,6 +303,7 @@ elif menu == "📚 Koleksi Buku":
             data["kategori"] == kategori
         ]
 
+    st.write("jumlah data setelah filter :", len(data))
     for _, buku in data.iterrows():
 
         warna = "🟢" if buku["status"] == "Tersedia" else "🔴"
