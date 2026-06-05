@@ -63,8 +63,6 @@ conn = sqlite3.connect(
 )
 
 cursor = conn.cursor()
-cursor.execute("DELETE FROM books") 
-conn.commit()
 
 # =====================================================
 # TABEL BUKU
