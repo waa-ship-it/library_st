@@ -198,14 +198,6 @@ menu = st.sidebar.radio(
     ]
 )
 
-st.sidebar.markdown("---")
-
-st.sidebar.info("""
-📖 Quotes Hari Ini
-
-"Books are the quietest and most constant of friends."
-""")
-
 # =====================================================
 # HOME
 # =====================================================
