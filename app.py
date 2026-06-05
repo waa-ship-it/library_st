@@ -146,7 +146,10 @@ if cursor.fetchone()[0] == 0:
 
         # FIKSI
         ("BK019", "Laut Bercerita", "Leila S. Chudori", "Fiksi", 2017, 4.9, "Tersedia"),
-        ("BK020", "Cantik Itu Luka", "Eka Kurniawan", "Fiksi", 2002, 4.8, "Tersedia"),
+        ("BK020", "Seporsi Mie Ayam Sebelum Mati", "Brian Khrisna", "Fiksi", 2023, 4.8, "Tersedia"),
+        ("BK021", "Samuel", "Ita Kurniawati", "Fiksi", 2021, 4.9, "Tersedia"),
+        ("BK022", "Eccedentesiast", "Ita Kurniawati", "Fiksi", 2022, 4.9, "Tersedia"),
+        ("BK023", "Pulang", " Leila S. Chudori", "Fiksi", 2015, 4.8, "Tersedia"),
 
         # MISTERI
         ("BK021", "Sherlock Holmes", "Arthur Conan Doyle", "Misteri", 1892, 4.9, "Tersedia"),
@@ -173,11 +176,8 @@ if cursor.fetchone()[0] == 0:
 # =====================================================
 
 st.sidebar.markdown("""
-# 📚 Libraverse
-
-### Digital Library System ✨
-
-Kelola dan pinjam buku favoritmu dengan mudah 💜
+# 🌸Menu library 
+Temukan semua fitur favoritmu di sini 👇
 """)
 
 st.sidebar.markdown("---")
@@ -774,7 +774,7 @@ elif menu == "🗑️ Hapus Riwayat":
 st.markdown("""
 <div class="footer">
 
-📚 Libraverse — Modern Digital Library
+Libraverse — Digital Library © 2026
 
 </div>
 """, unsafe_allow_html=True)
