@@ -176,7 +176,7 @@ if cursor.fetchone()[0] == 0:
 # =====================================================
 
 st.sidebar.markdown("""
-#🌸 Menu library 
+# 🌸 Menu library 
 Temukan semua fitur favoritmu di sini 👇
 """)
 
