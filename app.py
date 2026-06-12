@@ -777,7 +777,15 @@ elif menu == "🧹 Hapus Riwayat":
                 (id_hapus,)
             )
 
-            conn.commit()
+            cursor.execute("SELECT COUNT(*) FROM peminjaman")
+            jumlah = cursor.fetchone()[0]
+
+            if jumlah == 0:
+                cursor.execute(
+                    "DELETE FROM sqlite_sequence WHERE name='peminjaman'"
+                )
+                
+                conn.commit()
 
             st.success("✅ Riwayat berhasil dihapus")
 
