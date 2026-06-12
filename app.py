@@ -347,27 +347,15 @@ Pantau seluruh aktivitas peminjaman buku.
 
     st.subheader("🌟 Buku Favorit")
 
-    terpopuler = pd.read_sql_query("""
-    SELECT
-        judul,
-        COUNT(*) AS total_pinjam
-    FROM peminjaman
-    GROUP BY judul
-    ORDER BY total_pinjam DESC
+    favorit = pd.read_sql_query("""
+    SELECT judul
+    FROM books
+    ORDER BY rating DESC
     LIMIT 5
     """, conn)
 
-    if len(terpopuler) > 0:
-
-        for _, row in terpopuler.iterrows():
-
-            st.markdown(
-                f"📖 {row['judul']}"
-            )
-
-    else:
-        st.info("Belum ada data peminjaman.")
-
+    for _, row in favorit.iterrows():
+        st.markdown(f"📖 {row['judul']}")
 
     # KATEGORI
 
